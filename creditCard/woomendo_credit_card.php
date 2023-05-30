@@ -118,7 +118,7 @@ class CreditCard{
                     </div>
                 </div>
             </div>
-            <form class="form-container" method="post" action="" novalidate id="paymendo_form">
+            <!--<form class="form-container" method="post" action="" novalidate id="paymendo_form">-->
                 <div class="field-container">
                     <label for="holder_name">'.__('Name', 'Paymendo').'</label>
                     <input id="holder_name" maxlength="20" type="text" name="creditcard_ownerName" value="">
@@ -142,7 +142,7 @@ class CreditCard{
                     <input type="hidden" id="order_id" name="order_id" value="'.('1').'">
                     <input type="hidden" id="operation" name="operation" value="payment_order">
                 <div id="credit_card_balance"><b>'.__('Balance', 'Paymendo').' : </b>  '.$order_balance.'</div>
-            </form>
+            <!--</form>-->
             <div id="iframe-container"><iframe id="form-submit-iframe" style="display:none;">
                 </iframe>
             </div>
@@ -150,3 +150,5 @@ class CreditCard{
         return $return;        
     }
 }
+
+?>

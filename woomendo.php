@@ -8,6 +8,11 @@ Author: Umut
 require (__DIR__).'/creditCard//woomendo_credit_card.php';
 require (__DIR__).'/WooMendo_init_gateway_class.php';
 
+/* 
+	kredi kartı ülke değiştirmedikçe çalışıyor ve kredi kartına girilen değerleride tutabildim
+	api ayarlarının girilebilmesi için ödeme filedlarını özelleştirip bunları kullanmayı çözmem gerek
+*/
+
 
 // Bu kanca sınıfımı bir WooCommerce ödeme yöntemi olarak kaydeder
 add_filter( 'woocommerce_payment_gateways', function ( $gateways ){

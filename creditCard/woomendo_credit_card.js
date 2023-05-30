@@ -9,6 +9,11 @@ jQuery(document).on('updated_checkout', function (param) {
     const ccicon = document.getElementById('ccicon');
     const ccsingle = document.getElementById('ccsingle');
 
+
+
+
+
+
     // Benim Kodlarım
     const mySbmtBtn = document.getElementById('mySubmitButton')
     const paymendo_form = document.getElementById('paymendo_form')
@@ -312,29 +317,10 @@ jQuery(document).on('updated_checkout', function (param) {
     });
     
     
-    
-    //Generate random card number from list of known test numbers
-    const randomCard = function () {
-        let testCards = [
-            '4000056655665556',
-            '5200828282828210',
-            '371449635398431',
-            '6011000990139424',
-            '30569309025904',
-            '3566002020360505',
-            '6200000000000005',
-            '6759649826438453',
-        ];
-        let randomNumber = Math.floor(Math.random() * testCards.length);
-        cardnumber_mask.unmaskedValue = testCards[randomNumber];
-    }
-    // generatecard.addEventListener('click', function () {
-    //     randomCard();
-    // });
-    
+
     
     // CREDIT CARD IMAGE JS
-     document.querySelector('.preload').classList.remove('preload');
+    document.querySelector('.preload').classList.remove('preload');
     document.querySelector('.creditcard').addEventListener('click', function () {
         if (this.classList.contains('flipped')) {
             this.classList.remove('flipped');
@@ -344,8 +330,9 @@ jQuery(document).on('updated_checkout', function (param) {
     })
     
     //On Input Change Events
+    /* Buradaki trans koduna bak */
     name.addEventListener('input', function () {
-        const name_surname_trans = document.getElementById('name_surname_trans').innerText;
+        // const name_surname_trans = document.getElementById('name_surname_trans').innerText;
         if (name.value.length == 0) {
             document.getElementById('svgname').innerHTML = name_surname_trans;
             document.getElementById('svgnameback').innerHTML = name_surname_trans;
