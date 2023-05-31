@@ -175,7 +175,6 @@
                     $currenyCode = 'TRY' ;
                     $amount = $order->get_total(); # Total fiyatı verir 
                     $create_order_url = $this->base_api_url.$this->order_api_url;
-                    $create_order_url = '';
 
                     $create_order_response = $this->paymendoRequest->createOrder($create_order_url, array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
                     
@@ -190,8 +189,6 @@
                     return ;
                 }
 
-                
-                
                 // $order->payment_complete();
                 // $order->add_order_note( 'Siparişiniz alındı teşekkürler.', true );
                 // $woocommerce->cart->empty_cart();
