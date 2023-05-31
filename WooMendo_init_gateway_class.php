@@ -2,7 +2,7 @@
     class WC_WooMendo_Gateway extends WC_Payment_Gateway {
 
         private CreditCard $creditCard;
-            
+        private PaymendoRequest $paymendoRequest;
 
         public function __construct() {
 
@@ -21,7 +21,7 @@
             $this->init_form_fields();
         
             $this->init_settings();
-
+ 
             # Form fieldleri tanımladığım yer
             $this->description = $this->get_option( 'description' );
             $this->enabled = $this->get_option( 'enabled' );
@@ -31,8 +31,11 @@
             $this->payment_api_url = $this->get_option( 'payment_api_url' );
             $this->order_api_url = $this->get_option( 'order_api_url' );
             $this->login_mail = $this->get_option( 'login_mail' );
+            $this->login_password = $this->get_option( 'login_password' );
             # Form fieldleri tanımladığım yer
-        
+
+            $this->paymendoRequest = new PaymendoRequest($this->login_password, $this->login_mail, $this->base_api_url, $this->login_api_url, $this->payment_api_url, $this->order_api_url);
+            
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
             add_action( 'wp_enqueue_scripts', array( $this, 'payment_scripts' ) );
@@ -100,6 +103,7 @@
                 echo wpautop( wp_kses_post( $this->description ) );
             }
 
+
             echo $this->creditCard->renderCreditCard();
             
         }
@@ -117,7 +121,7 @@
             wc_clear_notices();
 
             global $woocommerce;
-            
+
             if ( !empty($_POST['creditcard_ownerName']) && !empty($_POST['creditcard_cardnumber']) && !empty($_POST['creditcard_expirationdate']) && !empty($_POST['creditcard_securitycode'])) {
 
                 # Kredi Kartı Bilgilerini Aldık 
@@ -150,18 +154,12 @@
 
                 # sipariş bilgilerini aldık
                 $order = wc_get_order( $order_id );  
+
                 # sipariş bilgilerini aldık
-
-
-
-
-
-
-
-
 
                 # Burada faturayı oluşturacağız ve ödeyeceğiz @@@@@@@@@@@@@@@@@@@ 
                 if (true) {
+
                     /* 
                         pending: Sipariş henüz işlenmemiş durumda.
                         on-hold: Sipariş, müşteriye gönderilmeden önce bekletiliyor.
@@ -172,6 +170,21 @@
                         failed: Siparişin ödeme işlemi başarısız oldu.
                         $order->payment_complete()  processing moduna alıyor
                     */
+
+                    try{
+                        $order_comments = $_POST['order_comments'] ; # not
+                        $currenyCode = 'TRY' ;
+                        $amount = $order->get_total(); # Total fiyatı verir 
+                        $create_order_url = $this->base_api_url.$this->order_api_url ;
+                        $create_order_response = $this->paymendoRequest->createOrder($create_order_url, array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
+                        
+                    }
+                    catch (Exception $error){
+                        wc_add_notice($error->getMessage(), 'error' );
+                        return ;
+                    }
+
+
                     $order->payment_complete();
                     $order->reduce_order_stock();
                     $order->add_order_note( 'Siparişiniz alındı teşekkürler.', true );
