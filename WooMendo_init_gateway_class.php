@@ -118,9 +118,10 @@
         
         public function process_payment( $order_id ) {
             
-            wc_clear_notices();
+            // wc_clear_notices();
 
             global $woocommerce;
+
 
             if ( !empty($_POST['creditcard_ownerName']) && !empty($_POST['creditcard_cardnumber']) && !empty($_POST['creditcard_expirationdate']) && !empty($_POST['creditcard_securitycode'])) {
 
@@ -154,11 +155,9 @@
 
                 # sipariş bilgilerini aldık
                 $order = wc_get_order( $order_id );  
-
                 # sipariş bilgilerini aldık
 
                 # Burada faturayı oluşturacağız ve ödeyeceğiz @@@@@@@@@@@@@@@@@@@ 
-                if (true) {
 
                     /* 
                         pending: Sipariş henüz işlenmemiş durumda.
@@ -170,30 +169,37 @@
                         failed: Siparişin ödeme işlemi başarısız oldu.
                         $order->payment_complete()  processing moduna alıyor
                     */
+            
+                try{
+                    $order_comments = $_POST['order_comments'] ; # not
+                    $currenyCode = 'TRY' ;
+                    $amount = $order->get_total(); # Total fiyatı verir 
+                    $create_order_url = $this->base_api_url.$this->order_api_url;
+                    $create_order_url = '';
 
-                    try{
-                        $order_comments = $_POST['order_comments'] ; # not
-                        $currenyCode = 'TRY' ;
-                        $amount = $order->get_total(); # Total fiyatı verir 
-                        $create_order_url = $this->base_api_url.$this->order_api_url ;
-                        $create_order_response = $this->paymendoRequest->createOrder($create_order_url, array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
-                        
-                    }
-                    catch (Exception $error){
-                        wc_add_notice($error->getMessage(), 'error' );
-                        return ;
-                    }
-
-
-                    $order->payment_complete();
+                    $create_order_response = $this->paymendoRequest->createOrder($create_order_url, array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
+                    
+                    $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
+                    
+                    $order->set_status('pending');
+                    $order->save();
                     $order->reduce_order_stock();
-                    $order->add_order_note( 'Siparişiniz alındı teşekkürler.', true );
-                    $woocommerce->cart->empty_cart();
-                    return array(
-                        'result' => 'success',
-                        'redirect' => $this->get_return_url( $order )
-                    );
                 }
+                catch (Exception $error){
+                    wc_add_notice($error->getMessage(), 'error' );
+                    return ;
+                }
+
+                
+                
+                // $order->payment_complete();
+                // $order->add_order_note( 'Siparişiniz alındı teşekkürler.', true );
+                // $woocommerce->cart->empty_cart();
+
+                return array(
+                    'result' => 'success',
+                    'redirect' => $this->get_return_url( $order )
+                );
                 # Burada faturayı oluşturacağız ve ödeyeceğiz @@@@@@@@@@@@@@@@@@@
             }
 
