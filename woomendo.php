@@ -5,7 +5,8 @@ Description: Extends WooCommerce with an WooMendo gateway.
 Version: 1.0
 Author: Umut
 */
-require (__DIR__).'/creditCard//woomendo_credit_card.php';
+require (__DIR__).'/creditCard//woomendo_credit_card_class.php';
+require (__DIR__).'/PaymendoRequest_class.php';
 require (__DIR__).'/WooMendo_init_gateway_class.php';
 
 /* 

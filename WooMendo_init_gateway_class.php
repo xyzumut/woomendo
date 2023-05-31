@@ -3,6 +3,7 @@
 
         private CreditCard $creditCard;
             
+
         public function __construct() {
 
             $this->id = 'woomendo'; 
@@ -119,22 +120,29 @@
             
             if ( !empty($_POST['creditcard_ownerName']) && !empty($_POST['creditcard_cardnumber']) && !empty($_POST['creditcard_expirationdate']) && !empty($_POST['creditcard_securitycode'])) {
 
+                # Kredi Kartı Bilgilerini Aldık 
+                $woomendo_card_holder = $_POST['creditcard_ownerName'] ;
+                $woomendo_card_number = $_POST['creditcard_cardnumber'] ;
+                $woomendo_card_expDate = $_POST['creditcard_expirationdate'] ;
+                $woomendo_card_securityCode = $_POST['creditcard_securitycode'] ;
+                # Kredi Kartı Bilgilerini Aldık 
+                
                 # Güvenlik kodunun 3 hane olup olmadığına bak
-                if (strlen($_POST['creditcard_securitycode'])!==3 ){ 
+                if (strlen($woomendo_card_securityCode)!==3 ){ 
                     wc_add_notice(__('Credit card security number must be 3 digits.', '@1@'), 'error' );
                     return ;
                 }
                 # Güvenlik kodunun 3 hane olup olmadığına bak
 
                 # Kart numarasının 16 hane olup olmadığına bak, boşluklar ile 19 oluyor
-                if (strlen($_POST['creditcard_cardnumber']) !==19  ){ 
+                if (strlen($woomendo_card_number) !==19  ){ 
                     wc_add_notice(__('Credit card number must be 16 digits.', '@1@'), 'error' );
                     return ;
                 }
                 # Kart numarasının 16 hane olup olmadığına bak, boşluklar ile 19 oluyor
 
                 # Son kullanma tarihinin formatına bak
-                if (strlen($_POST['creditcard_expirationdate'])!==5){
+                if (strlen($woomendo_card_expDate)!==5){
                     wc_add_notice(__('Enter the credit card expiration date correctly.', '@1@'), 'error' );
                     return ;
                 }
@@ -144,12 +152,13 @@
                 $order = wc_get_order( $order_id );  
                 # sipariş bilgilerini aldık
 
-                # Kredi Kartı Bilgilerini Aldık 
-                $woomendo_card_holder = $_POST['creditcard_ownerName'] ;
-                $woomendo_card_number = $_POST['creditcard_cardnumber'] ;
-                $woomendo_card_expDate = $_POST['creditcard_expirationdate'] ;
-                $woomendo_card_securityCode = $_POST['creditcard_securitycode'] ;
-                # Kredi Kartı Bilgilerini Aldık 
+
+
+
+
+
+
+
 
                 # Burada faturayı oluşturacağız ve ödeyeceğiz @@@@@@@@@@@@@@@@@@@ 
                 if (true) {
@@ -161,8 +170,6 @@
                         cancelled: Sipariş müşteri veya yönetici tarafından iptal edildi.
                         refunded: Siparişin tamamı iade edildi.
                         failed: Siparişin ödeme işlemi başarısız oldu.
-
-
                         $order->payment_complete()  processing moduna alıyor
                     */
                     $order->payment_complete();
