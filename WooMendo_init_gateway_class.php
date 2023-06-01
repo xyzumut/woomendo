@@ -172,20 +172,23 @@
                     */
 
                 try{
+
+                    #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
                     $order_comments = $_POST['order_comments'] ; # not
                     $currenyCode = 'TRY' ;
                     $amount = $order->get_total(); # Total fiyatı verir 
                     $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
-                    var_dump($create_order_response);
-                    return;
                     $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
-                    
                     $order->set_status('pending');
                     $order->save();
                     $order->reduce_order_stock();
+                    #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
                 }
                 catch (Exception $error){
                     wc_add_notice($error->getMessage(), 'error' );
+                    $order->set_status('failed');
+                    $order->save();
+
                     return ;
                 }
 

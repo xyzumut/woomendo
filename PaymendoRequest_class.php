@@ -133,8 +133,6 @@
             }
             # İstek login isteği değilse tokeni ekle
 
-            // print_r(['getWoomendoAccessToken($refresh)' => $this->getWoomendoAccessToken($refresh), '$refresh' => $refresh]);
-
             # Request Optionsı ayarladık
             $request_options = array (
                 'body'      =>  $body,
@@ -152,11 +150,12 @@
             $response =  json_decode( wp_remote_retrieve_body( $response ), true);
 
 
-            if ($responseStatusCode>=200 && $responseStatusCode<300) {
+            if ($responseStatusCode>=200 && $responseStatusCode<300) 
                 return $response;
-            }
+            
 
             if (isset($response['status']) && $response['status'] === false) {
+                
                 if ($this->getWoomendoAccessToken($refresh) === '') 
                     return $this->requestWoomendo($endpoint_url, $data, true);
                 
@@ -164,25 +163,30 @@
             }
 
             if (isset($response['error']) ) {
+
                 if ($isThisLoginRequest) { # Buraya girdiyse login isteği atılmış ama bilgiler yanlış gitmiş demektir
+                    
                     # Auth yani şifre yanlış gönderilmiş
-                    if ($response['error'] === 'invalid_grant') {
+                    if ($response['error'] === 'invalid_grant') 
                         throw new Exception(__('Wrong password.', '@1@'));
-                    }
                     # Auth yani şifre yanlış gönderilmiş
 
                     # Auth yani şifre içi boş gönderilmiş
-                    if ($response['error'] === 'invalid_request') {
+                    if ($response['error'] === 'invalid_request') 
                         throw new Exception(__('The password was sent blank.', '@1@'));
-                    }
+                    
                     # Auth yani şifre içi boş gönderilmiş
                     throw new Exception(__('There was a problem, try again later.(1)', '@1@'));
                 }
-                if ($refresh) {
+
+                if ($refresh) 
                     throw new Exception(__('Doğrulama sağlanamıyor', 'Paymendo'));
-                }
+                
                 return $this->requestWoomendo($endpoint_url, $data, true);
+                
             }
+            
+            throw new Exception(__('An error occurred, base api url may be wrong!', '@1@'));
         }
 
     }
