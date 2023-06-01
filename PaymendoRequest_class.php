@@ -12,18 +12,16 @@
         private $woomendo_password;
         private $woomendo_mail;
         private $woomendo_base_api_url;
-        private $woomedo_login_api_url;
-        private $woomedo_payment_api_url;
-        private $woomedo_order_api_url;
         # Ayarlarda tanımlı olanlar
 
-        public function __construct($woomendo_password, $woomendo_mail, $woomendo_base_api_url, $woomedo_login_api_url, $woomedo_payment_api_url, $woomedo_order_api_url) { 
+        const woomedo_login_api_url = '/login';
+        const woomedo_payment_api_url = '/api/v2/payment/make';
+        const woomedo_order_api_url = '/api/v2/order' ;
+
+        public function __construct($woomendo_password, $woomendo_mail, $woomendo_base_api_url) { 
             $this->woomendo_password = $woomendo_password ;
             $this->woomendo_mail = $woomendo_mail ;
             $this->woomendo_base_api_url = $woomendo_base_api_url ;
-            $this->woomedo_login_api_url = $woomedo_login_api_url ;
-            $this->woomedo_payment_api_url = $woomedo_payment_api_url ;
-            $this->woomedo_order_api_url = $woomedo_order_api_url ;
             $this->woomendo_access_token = get_option( 'woomendo_access_token' ); # optionlarda böyle bir option bulamazsa boolean false dönüyor
             $this->woomendo_expires_in = get_option( 'woomendo_expires_in' ); # optionlarda böyle bir option bulamazsa boolean false dönüyor
             $this->woomendo_refresh_token = get_option( 'woomendo_refresh_token' ); # optionlarda böyle bir option bulamazsa boolean false dönüyor
@@ -49,7 +47,7 @@
             $body = array();
             $headers = array();
            
-            $url = $this->woomendo_base_api_url.$this->woomedo_login_api_url;
+            $url = $this->woomendo_base_api_url.PaymendoRequest::woomedo_login_api_url;
 
             $headers['Content-Type'] = 'application/json';
 
@@ -122,13 +120,15 @@
             }
             # authta hata var ise burası çalışacak
 
-            throw new Exception(__('There was a problem, try again later.(2)', '@1@'));
+            throw new Exception(__('There was a problem, try again later.(3)', '@1@'));
         }
 
 
 
-        public function createOrder($url, $data, $refresh=false){
-            
+        public function createOrder($data, $refresh=false){
+
+            $endpoint_url = PaymendoRequest::woomedo_order_api_url;
+
             # Bu if eğer access/refresh tokenlar veya expires_in silinmiş ise veya ilk kez istek atılıyorsa logini tetiklemek için 
             if ($this->woomendo_access_token === false || $this->woomendo_expires_in === false || $this->woomendo_refresh_token === false) {
                 $refresh=true;
@@ -145,18 +145,37 @@
                 ]
             ];
 
-            return $this->requestWoomendo( $url, $data, $refresh );
+            /* 
+                $endpoint_url düzgün geliyor
+            
+            */
+            return $this->requestWoomendo( $endpoint_url, $data, $refresh );
         }
 
-        public function requestWoomendo($url = '', $data = array(), $refresh=false, $method = 'POST'){
+        public function requestWoomendo($endpoint_url = '', $data = array(), $refresh=false, $method = 'POST'){
             
             $body = array();
             $headers = array();
+
             $request_function = 'wp_remote_post';
-            $isThisLoginRequest = $url === $woomendo_base_api_url.$woomedo_login_api_url;
+
+            $isThisLoginRequest = $endpoint_url === PaymendoRequest::woomedo_login_api_url;
+
+            $base_url = $this->woomendo_base_api_url;
+
+            # Base Urldeki düzeltmeler
+            if (substr($base_url,strlen($base_url)-1,1) === '/') {
+                $base_url = substr($base_url,0,strlen($base_url)-1);
+            }
+            if (substr($base_url,0,4) !== 'http') {
+                $base_url = 'http://'.$base_url;
+            }
+            # Base Urldeki düzeltmeler
+
+            $target_url = $base_url.$endpoint_url;
+
 
             $headers['Content-Type'] = 'application/json';
-
 
             if ($method==='GET') {
                 $request_function = 'wp_remote_get';
@@ -173,18 +192,22 @@
                 'body'      =>  wp_json_encode($data),
                 'headers'   =>  $headers,
             );
+            # Request Optionsı ayarladık
 
-            $response = $request_function($url, (object)$request_options);
+            # Requesti atıyoruz
+            $response = $request_function($target_url, (object)$request_options);
+            # Requesti atıyoruz
+
+            $response =  json_decode( wp_remote_retrieve_body( $response ), true);
+
 
             $responseStatusCode = wp_remote_retrieve_response_code($response);
-            $response =  json_decode( wp_remote_retrieve_body( $response ), true);
-            if (is_wp_error( $response )) {
-                throw new Exception(__('There was a problem, try again later.', '@1@'));
-            }
 
             if ($responseStatusCode>=200 && $responseStatusCode<300) {
                 return $response;
             }
+
+            var_dump($response);
 
             if (isset($response['status']) && $response['status'] === 'false') {
                 throw new Exception(__('Missing information sent.', '@1@'));
@@ -203,28 +226,15 @@
                         throw new Exception(__('The password was sent blank.', '@1@'));
                     }
                     # Auth yani şifre içi boş gönderilmiş
-                    throw new Exception(__('There was a problem, try again later.', '@1@'));
+                    throw new Exception(__('There was a problem, try again later.(1)', '@1@'));
                 }
                 if ($refresh) {
                     throw new Exception(__('Doğrulama sağlanamıyor', 'Paymendo'));
                 }
-                return $this->requestWoomendo($url, $body, true);
+                return $this->requestWoomendo($target_url, $body, true);
             }
         }
 
     }
-    // $response = wp_remote_post( $url, array(
-    //     'method'      => 'POST',
-    //     'timeout'     => 45,
-    //     'redirection' => 5,
-    //     'httpversion' => '1.0',
-    //     'blocking'    => true,
-    //     'headers'     => array(),
-    //     'body'        => array(
-    //         'username' => 'bob',
-    //         'password' => '1234xyz'
-    //     ),
-    //     'cookies'     => array()
-    //     )
-    // );
+
 ?>

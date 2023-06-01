@@ -27,14 +27,11 @@
             $this->enabled = $this->get_option( 'enabled' );
             $this->title = $this->get_option( 'title' );
             $this->base_api_url = $this->get_option( 'base_api_url' );
-            $this->login_api_url = $this->get_option( 'login_api_url' );
-            $this->payment_api_url = $this->get_option( 'payment_api_url' );
-            $this->order_api_url = $this->get_option( 'order_api_url' );
             $this->login_mail = $this->get_option( 'login_mail' );
             $this->login_password = $this->get_option( 'login_password' );
             # Form fieldleri tanımladığım yer
 
-            $this->paymendoRequest = new PaymendoRequest($this->login_password, $this->login_mail, $this->base_api_url, $this->login_api_url, $this->payment_api_url, $this->order_api_url);
+            $this->paymendoRequest = new PaymendoRequest($this->login_password, $this->login_mail, $this->base_api_url);
             
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
@@ -79,21 +76,6 @@
                     'type'        => 'text',
                     'description' => __('Base URL for API', '@1@'),
                 ),
-                'login_api_url' => array(
-                    'title'       => __('LOGIN API URL', '@1@'),
-                    'type'        => 'text',
-                    'description' => __('URL for LOGIN API', '@1@'),
-                ),
-                'payment_api_url' => array(
-                    'title'       => __('PAYMENT API URL', '@1@'),
-                    'type'        => 'text',
-                    'description' => __('URL for PAYMENT API', '@1@'),
-                ),
-                'order_api_url' => array(
-                    'title'       => __('ORDER API URL', '@1@'),
-                    'type'        => 'text',
-                    'description' => __('URL for ORDER API', '@1@'),
-                ),
             );
         }
 
@@ -124,6 +106,7 @@
 
 
             if ( !empty($_POST['creditcard_ownerName']) && !empty($_POST['creditcard_cardnumber']) && !empty($_POST['creditcard_expirationdate']) && !empty($_POST['creditcard_securitycode'])) {
+                
 
                 # Kredi Kartı Bilgilerini Aldık 
                 $woomendo_card_holder = $_POST['creditcard_ownerName'] ;
@@ -139,16 +122,34 @@
                 }
                 # Güvenlik kodunun 3 hane olup olmadığına bak
 
-                # Kart numarasının 16 hane olup olmadığına bak, boşluklar ile 19 oluyor
-                if (strlen($woomendo_card_number) !==19  ){ 
+                # Kart numarasının 16 hane olup olmadığına ve tamamen sayılardan oluşup oluşmadığına bak
+                $woomendo_card_number = implode('', explode(' ', $woomendo_card_number)); # boşlukları ayıkladık
+            
+                $characters = str_split($woomendo_card_number); # diziye çevirdik
+                
+                foreach ($characters as $char) {
+                    if (!is_numeric($char)) {
+                        wc_add_notice(__('Credit card number must be numbers only.', '@1@'), 'error' );
+                        return ;
+                    }
+                }
+            
+                if (strlen($woomendo_card_number) !== 16) {
                     wc_add_notice(__('Credit card number must be 16 digits.', '@1@'), 'error' );
                     return ;
                 }
-                # Kart numarasının 16 hane olup olmadığına bak, boşluklar ile 19 oluyor
+                # Kart numarasının 16 hane olup olmadığına ve tamamen sayılardan oluşup oluşmadığına bak
 
                 # Son kullanma tarihinin formatına bak
-                if (strlen($woomendo_card_expDate)!==5){
-                    wc_add_notice(__('Enter the credit card expiration date correctly.', '@1@'), 'error' );
+                if (strlen($woomendo_card_expDate)!==5 || $woomendo_card_expDate[2]!=='/'){ 
+                    wc_add_notice(__('credit card expiration date format is incorrect.', '@1@'), 'error' );
+                    return ;
+                }
+
+                $month = explode('/', $woomendo_card_expDate)[0];
+
+                if (intval($month)>12){
+                    wc_add_notice(__('Month value cannot be greater than 12.', '@1@'), 'error' );
                     return ;
                 }
                 # Son kullanma tarihinin formatına bak
@@ -169,15 +170,14 @@
                         failed: Siparişin ödeme işlemi başarısız oldu.
                         $order->payment_complete()  processing moduna alıyor
                     */
-            
+
                 try{
                     $order_comments = $_POST['order_comments'] ; # not
                     $currenyCode = 'TRY' ;
                     $amount = $order->get_total(); # Total fiyatı verir 
-                    $create_order_url = $this->base_api_url.$this->order_api_url;
-
-                    $create_order_response = $this->paymendoRequest->createOrder($create_order_url, array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
-                    
+                    $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
+                    var_dump($create_order_response);
+                    return;
                     $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
                     
                     $order->set_status('pending');

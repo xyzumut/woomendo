@@ -1,7 +1,7 @@
-expires ini değiştir (okey)
-access tokeni değiştir (okey)
+expires ini değiştir 
+access tokeni değiştir 
 
-expires ini sil (okey)
-access tokeni sil (okey)
+expires ini sil 
+access tokeni sil 
 
-hepsini sil (okey)
+hepsini sil 
