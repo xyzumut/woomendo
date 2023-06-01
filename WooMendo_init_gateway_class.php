@@ -183,7 +183,19 @@
                     $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
                     $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
                     #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                
+                    
+                    $deneme = wp_remote_post('http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment', [
+                        'headers' => ['Content-Type' => 'application/json']
+                    ]);
+                    
+                    ##############################################################################################################################
+                    # Burada ödeme yaptıracağız ona göre bir çıktı vereceğiz
+                    $deneme =  json_decode( wp_remote_retrieve_body( $deneme ), true);
+
+                    print_r( $deneme );
+
+                    return;
+                    ##############################################################################################################################
                 }
                 catch (Exception $error){
                     wc_add_notice($error->getMessage(), 'error' );

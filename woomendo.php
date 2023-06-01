@@ -20,3 +20,15 @@ add_filter( 'woocommerce_payment_gateways', function ( $gateways ){
 	$gateways[] = 'WC_WooMendo_Gateway'; // classımın ismi yazmalı burada 
 	return $gateways;
 });
+
+add_action('wp_ajax_paymendo_make_payment', 'make_payment_action');
+add_action('wp_ajax_nopriv_paymendo_make_payment', 'make_payment_action');
+
+function make_payment_action(){
+	$response = array(
+        'success' => true,
+        'message' => 'Deneme Basarili.'
+    );
+
+	wp_send_json( $response );
+}
