@@ -20,14 +20,14 @@ jQuery(document).on('updated_checkout', function (param) {
     // Benim Kodlarım
 
 
-    // var refresh_iframe = () => {
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     iframe.parentElement.removeChild(iframe);
-    //     let newIframe = document.createElement('iframe');
-    //     newIframe.style.display = "none";
-    //     newIframe.id = 'form-submit-iframe';
-    //     document.getElementById('iframe-container').appendChild(newIframe);
-    // }
+    var refresh_iframe = () => {
+        let iframe = document.getElementById('form-submit-iframe');
+        iframe.parentElement.removeChild(iframe);
+        let newIframe = document.createElement('iframe');
+        newIframe.style.display = "none";
+        newIframe.id = 'form-submit-iframe';
+        document.getElementById('iframe-container').appendChild(newIframe);
+    }
     // paymendo_form.addEventListener('submit', async function (ev)  {  
     //     ev.preventDefault();
     //     let formClone = this.cloneNode(true);
@@ -60,7 +60,7 @@ jQuery(document).on('updated_checkout', function (param) {
     //       }
     //     },
     //     false
-    //   );
+    // );
 
     // Benim Kodlarım
 

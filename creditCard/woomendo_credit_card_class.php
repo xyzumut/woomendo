@@ -118,31 +118,26 @@ class CreditCard{
                     </div>
                 </div>
             </div>
-            <!--<form class="form-container" method="post" action="" novalidate id="paymendo_form">-->
-                <div class="field-container">
-                    <label for="holder_name">'.__('Name', 'Paymendo').'</label>
-                    <input id="holder_name" maxlength="20" type="text" name="creditcard_ownerName" value="">
-                </div>
-                <div class="field-container">
-                    <label for="cardnumber">'.__('Card Number', 'Paymendo').'</label>
-                    <!-- <span id="generatecard">generate random</span> -->
-                    <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_cardnumber" value="">
-                    <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink">
-                    </svg>
-                </div>
-                <div class="field-container">
-                    <label for="expirationdate">'.__('Expiry Date (Month/Year)', 'Paymendo').'</label>
-                    <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_expirationdate" maxlength="16" value="">
-                </div>
-                <div class="field-container">
-                    <label for="securitycode">'.__('Security Code', 'Paymendo').'</label>
-                    <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_securitycode" maxlength="3" value="">
-                </div>
-                    <input type="hidden" id="order_id" name="order_id" value="'.('1').'">
-                    <input type="hidden" id="operation" name="operation" value="payment_order">
-                <div id="credit_card_balance"><b>'.__('Balance', 'Paymendo').' : </b>  '.$order_balance.'</div>
-            <!--</form>-->
+            <div class="field-container">
+                <label for="holder_name">'.__('Name', 'Paymendo').'</label>
+                <input id="holder_name" maxlength="20" type="text" name="creditcard_ownerName" value="">
+            </div>
+            <div class="field-container">
+                <label for="cardnumber">'.__('Card Number', 'Paymendo').'</label>
+                <!-- <span id="generatecard">generate random</span> -->
+                <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_cardnumber" value="">
+                <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                </svg>
+            </div>
+            <div class="field-container">
+                <label for="expirationdate">'.__('Expiry Date (Month/Year)', 'Paymendo').'</label>
+                <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_expirationdate" maxlength="16" value="">
+            </div>
+            <div class="field-container">
+                <label for="securitycode">'.__('Security Code', 'Paymendo').'</label>
+                <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_securitycode" maxlength="3" value="">
+            </div>
             <div id="iframe-container"><iframe id="form-submit-iframe" style="display:none;">
                 </iframe>
             </div>

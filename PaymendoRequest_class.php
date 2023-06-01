@@ -73,8 +73,6 @@
             return false;
         }
 
-
-
         public function createOrder($data, $refresh=false){
 
             $endpoint_url = PaymendoRequest::woomedo_order_api_url;
@@ -96,6 +94,32 @@
             ];
 
             return $this->requestWoomendo( $endpoint_url, $data, $refresh );
+        }
+
+        public function makePayment($creditCardData, $refresh=false){
+
+            $endpoint_url = PaymendoRequest::woomedo_payment_api_url;
+
+            # Bu if eğer access/refresh tokenlar veya expires_in silinmiş ise veya ilk kez istek atılıyorsa logini tetiklemek için 
+            if ($this->woomendo_access_token === false || $this->woomendo_expires_in === false || $this->woomendo_refresh_token === false) {
+                $refresh=true;
+            }
+            # Bu if eğer access/refresh tokenlar veya expires_in silinmiş ise veya ilk kez istek atılıyorsa logini tetiklemek için 
+
+            $data = (object) [
+                'data' => [
+                    'attributes' => [
+                        "cc_number"=> $creditCardData['cc_number'],
+                        "cc_cvv"=> $creditCardData['cc_cvv'],
+                        "cc_exp"=> $creditCardData['cc_exp'],
+                        "cc_holder"=> $creditCardData['cc_holder'],
+                        "order_id"=> $creditCardData['order_id'],
+                        "installment"=> 1
+                    ]
+                ]
+            ];
+
+            return $this->requestWoomendo( $endpoint_url, $creditCardData, $refresh );
         }
 
         public function requestWoomendo($endpoint_url = '', $data = array(), $refresh=false, $method = 'POST'){

@@ -104,7 +104,6 @@
 
             global $woocommerce;
 
-
             if ( !empty($_POST['creditcard_ownerName']) && !empty($_POST['creditcard_cardnumber']) && !empty($_POST['creditcard_expirationdate']) && !empty($_POST['creditcard_securitycode'])) {
                 
 
@@ -173,22 +172,21 @@
 
                 try{
 
+                    $order->set_status('pending');
+                    $order->reduce_order_stock();
+                    $order->save();
+
                     #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
                     $order_comments = $_POST['order_comments'] ; # not
                     $currenyCode = 'TRY' ;
                     $amount = $order->get_total(); # Total fiyatı verir 
                     $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
                     $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
-                    $order->set_status('pending');
-                    $order->save();
-                    $order->reduce_order_stock();
                     #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
+                
                 }
                 catch (Exception $error){
                     wc_add_notice($error->getMessage(), 'error' );
-                    $order->set_status('failed');
-                    $order->save();
-
                     return ;
                 }
 
