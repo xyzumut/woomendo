@@ -44,14 +44,8 @@
 
         public function loginWithPassword(){
 
-            $body = array();
-            $headers = array();
-           
-            $url = $this->woomendo_base_api_url.PaymendoRequest::woomedo_login_api_url;
 
-            $headers['Content-Type'] = 'application/json';
-
-            $body = (object) [
+            $data = (object) [
                 'data' => [
                     'attributes' => [
                         'grant_type'=> 'password',
@@ -61,66 +55,22 @@
                 ]
             ];
 
-            $request_options = array (
-                'method'    => 'POST',
-                'body'      =>  wp_json_encode($body),
-                'headers'   =>  $headers
-            );
+           
+            $response = $this->requestWoomendo( PaymendoRequest::woomedo_login_api_url, $data);
 
-            $response = wp_remote_post( $url, $request_options);
+            // var_dump($response); access token yanlış cevabı geliyor 
 
-            # herhangi birini(grant_type, login ve auth) hiç göndermediğimde "status" => "false" dönüyor
-            # mail boş veya yanlış oldugundada "status" => "false" 
-            # grant type boş olduğunda "status" => "false"
-            # authu yanlış(ama boş değil) gönderince "error" ve "error_description" dönüyor."error" =>  "invalid_grant"  ve "error_description" => "Invalid username and password combination"
-            # authu          boş          gönderince "error" ve "error_description" dönüyor."error" => "invalid_request" ve "error_description" => "Missing parameters. \"username\" and \"password\" required"
-
-            if (is_wp_error( $response )) {
-                throw new Exception(__('There was a problem, try again later.(1)', '@1@'));
-            }
-
-            $responseStatusCode = wp_remote_retrieve_response_code($response);
-            $response =  json_decode( wp_remote_retrieve_body( $response ), true);
-
-            # Başarılı Cevap
-            if ($responseStatusCode >= 200 && $responseStatusCode < 300) {
-
+            if (isset($response['access_token'])) {
                 update_option( 'woomendo_access_token', $response['access_token'] );
                 update_option( 'woomendo_expires_in', $response['expires_in']+time() );
                 update_option( 'woomendo_refresh_token', $response['refresh_token'] );
-                $this->woomendo_access_token = $response['access_token'];
-                $this->woomendo_refresh_token = $response['refresh_token'];
+                $this->woomendo_access_token = get_option( 'woomendo_access_token' );
+                $this->woomendo_refresh_token = get_option( 'woomendo_refresh_token' );
                 $this->woomendo_expires_in = get_option( 'woomendo_expires_in' );
                 return true;
             }
-            # Başarılı Cevap
-
-
-            # Bilgiler eksik gönderildi ise burası çalışacak
-            if (isset($response['status']) && $response['status'] === 'false') {
-                throw new Exception(__('Missing information sent.', '@1@'));
-            }
-            # Bilgiler eksik gönderildi ise burası çalışacak
-
-            # authta hata var ise burası çalışacak 
-            if (isset($response['error']) && isset($response['error_description'])) {
-
-                # Auth yani şifre yanlış gönderilmiş
-                if ($response['error'] === 'invalid_grant') {
-                    throw new Exception(__('Wrong password.', '@1@'));
-                }
-                # Auth yani şifre yanlış gönderilmiş
-
-                # Auth yani şifre içi boş gönderilmiş
-                if ($response['error'] === 'invalid_request') {
-                    throw new Exception(__('The password was sent blank.', '@1@'));
-                }
-                # Auth yani şifre içi boş gönderilmiş
-
-            }
-            # authta hata var ise burası çalışacak
-
-            throw new Exception(__('There was a problem, try again later.(3)', '@1@'));
+            
+            return false;
         }
 
 
@@ -145,16 +95,13 @@
                 ]
             ];
 
-            /* 
-                $endpoint_url düzgün geliyor
-            
-            */
             return $this->requestWoomendo( $endpoint_url, $data, $refresh );
         }
 
         public function requestWoomendo($endpoint_url = '', $data = array(), $refresh=false, $method = 'POST'){
-            
-            $body = array();
+
+
+            $body = wp_json_encode($data);
             $headers = array();
 
             $request_function = 'wp_remote_post';
@@ -174,7 +121,6 @@
 
             $target_url = $base_url.$endpoint_url;
 
-
             $headers['Content-Type'] = 'application/json';
 
             if ($method==='GET') {
@@ -187,29 +133,33 @@
             }
             # İstek login isteği değilse tokeni ekle
 
+            // print_r(['getWoomendoAccessToken($refresh)' => $this->getWoomendoAccessToken($refresh), '$refresh' => $refresh]);
+
             # Request Optionsı ayarladık
             $request_options = array (
-                'body'      =>  wp_json_encode($data),
+                'body'      =>  $body,
                 'headers'   =>  $headers,
             );
             # Request Optionsı ayarladık
 
             # Requesti atıyoruz
-            $response = $request_function($target_url, (object)$request_options);
+            $response = $request_function($target_url, $request_options);
+
             # Requesti atıyoruz
+
+            $responseStatusCode = wp_remote_retrieve_response_code($response);
 
             $response =  json_decode( wp_remote_retrieve_body( $response ), true);
 
-
-            $responseStatusCode = wp_remote_retrieve_response_code($response);
 
             if ($responseStatusCode>=200 && $responseStatusCode<300) {
                 return $response;
             }
 
-            var_dump($response);
-
-            if (isset($response['status']) && $response['status'] === 'false') {
+            if (isset($response['status']) && $response['status'] === false) {
+                if ($this->getWoomendoAccessToken($refresh) === '') 
+                    return $this->requestWoomendo($endpoint_url, $data, true);
+                
                 throw new Exception(__('Missing information sent.', '@1@'));
             }
 
@@ -231,7 +181,7 @@
                 if ($refresh) {
                     throw new Exception(__('Doğrulama sağlanamıyor', 'Paymendo'));
                 }
-                return $this->requestWoomendo($target_url, $body, true);
+                return $this->requestWoomendo($endpoint_url, $data, true);
             }
         }
 
