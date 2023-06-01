@@ -31,7 +31,8 @@ class CreditCard{
                                 <g id="CardBackground">
                                     <g id="Page-1_1_">
                                         <g id="amex_1_">
-                                            <path id="Rectangle-1_1_" class="lightcolor grey" d="M40,0h670c22.1,0,40,17.9,40,40v391c0,22.1-17.9,40-40,40H40c-22.1,0-40-17.9-40-40V40 C0,17.9,17.9 beya,0,40,0z" />
+                                        <path id="Rectangle-1_1_" class="lightcolor grey" d="M40,0h670c22.1,0,40,17.9,40,40v391c0,22.1-17.9,40-40,40H40c-22.1,0-40-17.9-40-40V40
+                                        C0,17.9,17.9,0,40,0z" />
                                         </g>
                                     </g>
                                     <path class="darkcolor greydark" d="M750,431V193.2c-217.6-57.5-556.4-13.5-750,24.9V431c0,22.1,17.9,40,40,40h670C732.1,471,750,453.1,750,431z" />
@@ -117,45 +118,37 @@ class CreditCard{
                     </div>
                 </div>
             </div>
-            <form class="form-container" method="post" action="" novalidate id="paymendo_form">
+            <!--<form class="form-container" method="post" action="" novalidate id="paymendo_form">-->
                 <div class="field-container">
                     <label for="holder_name">'.__('Name', 'Paymendo').'</label>
-                    <input id="holder_name" maxlength="20" type="text" name="creditcard_ownerName" value="xyzumut06@gmail.com">
+                    <input id="holder_name" maxlength="20" type="text" name="creditcard_ownerName" value="">
                 </div>
                 <div class="field-container">
                     <label for="cardnumber">'.__('Card Number', 'Paymendo').'</label>
                     <!-- <span id="generatecard">generate random</span> -->
-                    <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_cardnumber" value="4471135571135575">
+                    <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_cardnumber" value="">
                     <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
                     </svg>
                 </div>
                 <div class="field-container">
                     <label for="expirationdate">'.__('Expiry Date (Month/Year)', 'Paymendo').'</label>
-                    <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_expirationdate" maxlength="16" value="12/26">
+                    <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_expirationdate" maxlength="16" value="">
                 </div>
                 <div class="field-container">
                     <label for="securitycode">'.__('Security Code', 'Paymendo').'</label>
-                    <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_securitycode" maxlength="3" value="000">
+                    <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_securitycode" maxlength="3" value="">
                 </div>
                     <input type="hidden" id="order_id" name="order_id" value="'.('1').'">
                     <input type="hidden" id="operation" name="operation" value="payment_order">
-                    <button id="mySubmitButton" >'.__('Submit', 'Paymendo').'</button>
                 <div id="credit_card_balance"><b>'.__('Balance', 'Paymendo').' : </b>  '.$order_balance.'</div>
-            </form>
+            <!--</form>-->
             <div id="iframe-container"><iframe id="form-submit-iframe" style="display:none;">
                 </iframe>
-            </div>
-            <div id="toasts">
-                <span id="toast_message" style="display:none;">'.__('Please enter all information completely.', 'Paymendo').'</span>
-            </div>
-        <div style="display:none;">
-                <span id="name_surname_trans">'.__('Name Surname', 'Paymendo').'</span>
-                <span id="credit_card_trans">'.__('Card Number', 'Paymendo').'</span>
-                <span id="security_code_trans">'.__('Security Code', 'Paymendo').'</span>
-                <span id="expires_date_trans">'.__('Expiry Date (Month/Year)', 'Paymendo').'</span>
             </div>
         </div>';
         return $return;        
     }
 }
+
+?>
