@@ -11,6 +11,9 @@ jQuery(document).on('updated_checkout', function (param) {
 
 
 
+    const deneme = () => {
+        alert('Heyy');
+    }
 
 
 
@@ -20,14 +23,14 @@ jQuery(document).on('updated_checkout', function (param) {
     // Benim Kodlarım
 
 
-    var refresh_iframe = () => {
-        let iframe = document.getElementById('form-submit-iframe');
-        iframe.parentElement.removeChild(iframe);
-        let newIframe = document.createElement('iframe');
-        newIframe.style.display = "none";
-        newIframe.id = 'form-submit-iframe';
-        document.getElementById('iframe-container').appendChild(newIframe);
-    }
+    // var refresh_iframe = () => {
+    //     let iframe = document.getElementById('form-submit-iframe');
+    //     iframe.parentElement.removeChild(iframe);
+    //     let newIframe = document.createElement('iframe');
+    //     newIframe.style.display = "none";
+    //     newIframe.id = 'form-submit-iframe';
+    //     document.getElementById('iframe-container').appendChild(newIframe);
+    // }
     // paymendo_form.addEventListener('submit', async function (ev)  {  
     //     ev.preventDefault();
     //     let formClone = this.cloneNode(true);
@@ -44,23 +47,23 @@ jQuery(document).on('updated_checkout', function (param) {
     //     iframe.style.height = 500;
     //     iframe.style.border = "0";
     // });
-    // window.addEventListener(
-    //     "message",
-    //     (event) => {
-    //       let messageData = event.data;
-    //       let messageType = messageData.event;
-    //       if(messageType === "payment_failed")
-    //       {
-    //         let message = messageData.message;
-    //         refresh_iframe();
-    //         alert(message);
-    //       } else if (messageType === "payment_success") {
-    //         alert("Ödeme tamamlandı!");
-    //         window.location.href = '/wp/faturalar-sayfasi/';
-    //       }
-    //     },
-    //     false
-    // );
+    window.addEventListener(
+        "message",
+        (event) => {
+          let messageData = event.data;
+          let messageType = messageData.event;
+          if(messageType === "payment_failed")
+          {
+            let message = messageData.message;
+            // refresh_iframe();
+            alert(message);
+          } else if (messageType === "payment_success") {
+            alert("Ödeme tamamlandı!");
+            // window.location.href = '/wp/faturalar-sayfasi/';
+          }
+        },
+        false
+    );
 
     // Benim Kodlarım
 
@@ -386,3 +389,55 @@ jQuery(document).on('updated_checkout', function (param) {
 
 
 });
+
+jQuery(document).on("ajaxSend", function(event, xhr, options){
+}).on("ajaxComplete", function(event, xhr, options){
+    let url = options.url;
+    if(url !== wc_checkout_params.checkout_url)
+        return false;
+    let data = options.data;
+    if(data.indexOf("payment_method=woomendo") === -1)
+        return false;
+        
+    // ev.preventDefault();
+    // let formClone = document.getElementsByName('checkout')[0].cloneNode(true);
+    // let iframe = document.getElementById('form-submit-iframe');
+
+
+    // formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
+    // formClone.method = "POST";
+    // let docIframe = iframe.contentDocument || iframe.contentWindow.document;
+    // docIframe.body.appendChild(formClone);
+    // formClone.style.display = "none";
+    // formClone.submit();
+    // iframe.style.display = "block";
+    // iframe.style.width = 500;
+    // iframe.style.height = 500;
+    // iframe.style.border = "0";
+});
+
+
+    // var refresh_iframe = () => {
+    //     let iframe = document.getElementById('form-submit-iframe');
+    //     iframe.parentElement.removeChild(iframe);
+    //     let newIframe = document.createElement('iframe');
+    //     newIframe.style.display = "none";
+    //     newIframe.id = 'form-submit-iframe';
+    //     document.getElementById('iframe-container').appendChild(newIframe);
+    // }
+    // paymendo_form.addEventListener('submit', async function (ev)  {  
+    //     ev.preventDefault();
+    //     let formClone = this.cloneNode(true);
+    //     let iframe = document.getElementById('form-submit-iframe');
+    //     formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
+    //     formClone.method = "POST";
+    //     let docIframe = iframe.contentDocument || iframe.contentWindow.document;
+    //     docIframe.body.appendChild(formClone);
+    //     formClone.style.display = "none";
+    //     formClone.submit();
+
+    //     iframe.style.display = "block";
+    //     iframe.style.width = 500;
+    //     iframe.style.height = 500;
+    //     iframe.style.border = "0";
+    // });
