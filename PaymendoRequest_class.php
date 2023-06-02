@@ -18,7 +18,7 @@
         const woomedo_payment_api_url = '/api/v2/payment/make';
         const woomedo_order_api_url = '/api/v2/order' ;
 
-        public function __construct($woomendo_password, $woomendo_mail, $woomendo_base_api_url) { 
+        public function __construct($woomendo_password , $woomendo_mail , $woomendo_base_api_url ) { 
             $this->woomendo_password = $woomendo_password ;
             $this->woomendo_mail = $woomendo_mail ;
             $this->woomendo_base_api_url = $woomendo_base_api_url ;
@@ -114,7 +114,7 @@
                         "cc_exp"=> $creditCardData['cc_exp'],
                         "cc_holder"=> $creditCardData['cc_holder'],
                         "order_id"=> $creditCardData['order_id'],
-                        "installment"=> 1
+                        "installment"=> $creditCardData['installment']
                     ]
                 ]
             ];

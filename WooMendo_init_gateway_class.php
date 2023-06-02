@@ -31,6 +31,12 @@
             $this->login_password = $this->get_option( 'login_password' );
             # Form fieldleri tanımladığım yer
 
+            # PaymendoRequest nesnesine başka bir yerden erişmek istersem diye optionlara kendimde kaydediyorum(payment ajax gibi)
+            update_option( 'login_password', $this->login_password );
+            update_option( 'login_mail', $this->login_mail );
+            update_option( 'base_api_url', $this->base_api_url );
+            # PaymendoRequest nesnesine başka bir yerden erişmek istersem diye optionlara kendimde kaydediyorum(payment ajax gibi)
+
             $this->paymendoRequest = new PaymendoRequest($this->login_password, $this->login_mail, $this->base_api_url);
             
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -84,7 +90,6 @@
             if ( $this->description ) {
                 echo wpautop( wp_kses_post( $this->description ) );
             }
-
 
             echo $this->creditCard->renderCreditCard();
             
@@ -157,8 +162,6 @@
                 $order = wc_get_order( $order_id );  
                 # sipariş bilgilerini aldık
 
-                # Burada faturayı oluşturacağız ve ödeyeceğiz @@@@@@@@@@@@@@@@@@@ 
-
                     /* 
                         pending: Sipariş henüz işlenmemiş durumda.
                         on-hold: Sipariş, müşteriye gönderilmeden önce bekletiliyor.
@@ -183,19 +186,7 @@
                     $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
                     $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
                     #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                    
-                    $deneme = wp_remote_post('http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment', [
-                        'headers' => ['Content-Type' => 'application/json']
-                    ]);
-                    
-                    ##############################################################################################################################
-                    # Burada ödeme yaptıracağız ona göre bir çıktı vereceğiz
-                    $deneme =  json_decode( wp_remote_retrieve_body( $deneme ), true);
-
-                    print_r( $deneme );
-
-                    return;
-                    ##############################################################################################################################
+                  
                 }
                 catch (Exception $error){
                     wc_add_notice($error->getMessage(), 'error' );
@@ -206,11 +197,24 @@
                 // $order->add_order_note( 'Siparişiniz alındı teşekkürler.', true );
                 // $woocommerce->cart->empty_cart();
 
-                return array(
-                    'result' => 'success',
-                    'redirect' => $this->get_return_url( $order )
-                );
-                # Burada faturayı oluşturacağız ve ödeyeceğiz @@@@@@@@@@@@@@@@@@@
+                $payment_ajax_response = wp_remote_post("http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment&amount=$amount&order_api_id=$order_api_id&currenyCode=$currenyCode&currenyCode=$currenyCode&woomendo_card_holder=$woomendo_card_holder&woomendo_card_number=$woomendo_card_number&woomendo_card_expDate=$woomendo_card_expDate&woomendo_card_securityCode=$woomendo_card_securityCode&order_wordpress_id=$order_id", [
+                    'headers' => ['Content-Type' => 'application/json']
+                ]); 
+                
+                $payment_ajax_response =  json_decode( wp_remote_retrieve_body( $payment_ajax_response ), true);
+
+                echo $payment_ajax_response['form'];
+
+                // return array(
+                //     'result' => 'success',
+                //     'redirect' => "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment&amount=$amount&order_api_id=$order_api_id&currenyCode=$currenyCode&currenyCode=$currenyCode&woomendo_card_holder=$woomendo_card_holder&woomendo_card_number=$woomendo_card_number&woomendo_card_expDate=$woomendo_card_expDate&woomendo_card_securityCode=$woomendo_card_securityCode"
+                // );
+
+
+                // return array(
+                //     'result' => 'success',
+                //     'redirect' => $this->get_return_url( $order )
+                // );
             }
 
             # Kredi kartı bilgilerinden herhangi birisi boş ise uyarı ver

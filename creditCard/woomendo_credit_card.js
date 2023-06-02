@@ -11,7 +11,9 @@ jQuery(document).on('updated_checkout', function (param) {
 
 
 
-
+    const deneme = () => {
+        alert('Heyy');
+    }
 
 
     // Benim Kodlarım
@@ -44,23 +46,23 @@ jQuery(document).on('updated_checkout', function (param) {
     //     iframe.style.height = 500;
     //     iframe.style.border = "0";
     // });
-    // window.addEventListener(
-    //     "message",
-    //     (event) => {
-    //       let messageData = event.data;
-    //       let messageType = messageData.event;
-    //       if(messageType === "payment_failed")
-    //       {
-    //         let message = messageData.message;
-    //         refresh_iframe();
-    //         alert(message);
-    //       } else if (messageType === "payment_success") {
-    //         alert("Ödeme tamamlandı!");
-    //         window.location.href = '/wp/faturalar-sayfasi/';
-    //       }
-    //     },
-    //     false
-    // );
+    window.addEventListener(
+        "message",
+        (event) => {
+          let messageData = event.data;
+          let messageType = messageData.event;
+          if(messageType === "payment_failed")
+          {
+            let message = messageData.message;
+            // refresh_iframe();
+            alert(message);
+          } else if (messageType === "payment_success") {
+            alert("Ödeme tamamlandı!");
+            // window.location.href = '/wp/faturalar-sayfasi/';
+          }
+        },
+        false
+    );
 
     // Benim Kodlarım
 
