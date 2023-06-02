@@ -27,6 +27,8 @@ add_action('wp_ajax_nopriv_paymendo_make_payment', 'make_payment_action');
 function make_payment_action(){
 
 	global $woocommerce;
+	$order_woo_commerce_id = $_GET['order_woocommerce_id'];
+
 	
 	$creditCardData = array(
 		'cc_number' => $_GET['woomendo_card_number'],
@@ -36,38 +38,22 @@ function make_payment_action(){
 		'order_id' => $_GET['order_api_id'],
 		'installment' => '1'
 	);
+	// $creditCardData = array(
+	// 	'cc_number' => '5571135571135571',
+	// 	'cc_cvv' => '000',
+	// 	'cc_exp' => '12/26',
+	// 	'cc_holder' => 'umut gedik' ,
+	// 	'order_id' => '406' ,
+	// 	'installment' => '1'
+	// );
+	$paymendo_request = new PaymendoRequest(get_option('login_password'), get_option('login_mail'), get_option('base_api_url'));
 
-	$paymendo_request = new PaymendoRequest(get_option( 'login_password' ), get_option( 'login_mail' ), get_option( 'base_api_url' ));
+	$payment_response = $paymendo_request->makePaymentWithoutAccessToken($creditCardData, $_GET['order_api_id']);
+
 	
-	try{
+	// $form = $payment_response['data']['attributes']['form'];
+	// $form = html_entity_decode($form);
+	// var_dump($payment_response);
 
-		$paymentResponse = $paymendo_request->makePayment($creditCardData);
-		// wp_send_json(array(
-		// 	'message' => $paymentResponse,
-		// ));
-		if (isset($paymentResponse['status']) && $paymentResponse['status'] === true) {
-			$form = $paymentResponse['data']['attributes']['form'];
-			$form = html_entity_decode($form);
-			wp_send_json (array(
-				'message' => 'Istek Basarili.',
-				'form'    => $form,
-				'state'   => '1',
-				'res' => $paymentResponse['status']===true
-			));
-		}
-		else {
-			wp_send_json(array(
-				'message' => 'Istek Basarisiz.',
-				'form'    => null,
-				'state'   => '0',
-			));
-		}
-	}
-	catch (Excepiton $error){
-		wp_send_json(array(
-			'message' => 'Bir hata oluştu lütfen daha sonra tekrar deneyin',
-			'form'    => null,
-			'state'   => '-1',
-		));
-	}
+
 }

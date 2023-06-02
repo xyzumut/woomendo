@@ -193,28 +193,24 @@
                     return ;
                 }
 
-                // $order->payment_complete();
-                // $order->add_order_note( 'Siparişiniz alındı teşekkürler.', true );
-                // $woocommerce->cart->empty_cart();
+                /* 
 
-                $payment_ajax_response = wp_remote_post("http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment&amount=$amount&order_api_id=$order_api_id&currenyCode=$currenyCode&currenyCode=$currenyCode&woomendo_card_holder=$woomendo_card_holder&woomendo_card_number=$woomendo_card_number&woomendo_card_expDate=$woomendo_card_expDate&woomendo_card_securityCode=$woomendo_card_securityCode&order_wordpress_id=$order_id", [
-                    'headers' => ['Content-Type' => 'application/json']
-                ]); 
+                    Bu kısımda genel form onaylanacak ve bunu javascript tarafında ben yakalayabiliyor olacağım
                 
-                $payment_ajax_response =  json_decode( wp_remote_retrieve_body( $payment_ajax_response ), true);
-
-                echo $payment_ajax_response['form'];
-
-                // return array(
-                //     'result' => 'success',
-                //     'redirect' => "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment&amount=$amount&order_api_id=$order_api_id&currenyCode=$currenyCode&currenyCode=$currenyCode&woomendo_card_holder=$woomendo_card_holder&woomendo_card_number=$woomendo_card_number&woomendo_card_expDate=$woomendo_card_expDate&woomendo_card_securityCode=$woomendo_card_securityCode"
-                // );
-
-
+                */
+                
+                
+                $redirect_url = "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment&woomendo_card_holder=$woomendo_card_holder&woomendo_card_number=$woomendo_card_number&woomendo_card_expDate=$woomendo_card_expDate&woomendo_card_securityCode=$woomendo_card_securityCode&order_api_id=$order_api_id&order_woocommerce_id=$order_id";
+                
+                return array(
+                    'result' => 'success',
+                    'redirect' => $redirect_url
+                );
                 // return array(
                 //     'result' => 'success',
                 //     'redirect' => $this->get_return_url( $order )
                 // );
+
             }
 
             # Kredi kartı bilgilerinden herhangi birisi boş ise uyarı ver

@@ -138,8 +138,8 @@ class CreditCard{
                 <label for="securitycode">'.__('Security Code', 'Paymendo').'</label>
                 <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_securitycode" maxlength="3" value="">
             </div>
-            <div id="iframe-container"><iframe id="form-submit-iframe" style="display:none;">
-                </iframe>
+            <div id="iframe-container">
+                <iframe id="form-submit-iframe" style="display:none;"></iframe>
             </div>
         </div>';
         return $return;        
