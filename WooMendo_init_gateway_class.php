@@ -186,7 +186,7 @@
                     $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
                     $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
                     #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                  
+                    
                 }
                 catch (Exception $error){
                     wc_add_notice($error->getMessage(), 'error' );
@@ -198,19 +198,22 @@
                     Bu kısımda genel form onaylanacak ve bunu javascript tarafında ben yakalayabiliyor olacağım
                 
                 */
-                
+
                 
                 $redirect_url = "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment&woomendo_card_holder=$woomendo_card_holder&woomendo_card_number=$woomendo_card_number&woomendo_card_expDate=$woomendo_card_expDate&woomendo_card_securityCode=$woomendo_card_securityCode&order_api_id=$order_api_id&order_woocommerce_id=$order_id";
                 
+                // return array(
+                //     'result' => 'success',
+                //     'redirect' => $redirect_url
+                // );
                 return array(
-                    'result' => 'success',
-                    'redirect' => $redirect_url
+                    'result' => 'error',
+                    'message' => 'deneme mesajımız'
                 );
                 // return array(
                 //     'result' => 'success',
                 //     'redirect' => $this->get_return_url( $order )
                 // );
-
             }
 
             # Kredi kartı bilgilerinden herhangi birisi boş ise uyarı ver

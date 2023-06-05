@@ -119,22 +119,18 @@
         }
 
         public function getOrderToken($order_id){
-
             
             $endpoint_url = PaymendoRequest::woomedo_order_api_url."/$order_id?include=additional_meta";
             
             $response = $this->requestWoomendo( $endpoint_url, array(), false, 'GET' );
-            print_r($response);die;
-            
-            return $response['included'][$order_id]['data']['meta_value'];
+
+            return $response['included'][$order_id][0]['data']['meta_value'];
 
         }
 
         public function makePaymentWithoutAccessToken($creditCardData, $order_id, $refresh=false){
 
             $orderToken = $this->getOrderToken($order_id);
-            
-            // $orderToken='9bd03b83c59bac627079';
 
             $endpoint_url = PaymendoRequest::woomendo_unAuth_payment_api_url."/$orderToken";
 
@@ -203,42 +199,18 @@
             # Request Optionsı ayarladık
             $request_options = array (
                 'headers'   =>  $headers,
-                'body'      =>  $body,
                 'method'    =>  $method
             );
-            # Request Optionsı ayarladık
 
-            /* 
-                226 - 228.satırlarda anlamadığım bir şekilde patlıyor
-            */
-
-            print_r([
-                'endpoint_url' => $endpoint_url,
-                'body' => $body,
-                'headers' => $headers,
-                'request_function' => $request_function,
-                'method' => $method,
-                'isThisLoginRequest' => $isThisLoginRequest===true ? 'Login' : 'Login Değil', 
-                'target_url' => $target_url,
-                'request_options' => $request_options
-            ]);die;
+            if ($method!=='GET') 
+                $request_options['body'] = $body;
 
             # Requesti atıyoruz
-            $response = $request_function($target_url, $request_options);
+            $response = $request_function($target_url, (object)$request_options);
             # Requesti atıyoruz
-
-
             $responseStatusCode = wp_remote_retrieve_response_code($response);
 
             $response =  json_decode( wp_remote_retrieve_body( $response ), true);
-
-            // print_r([
-            //     'donusturulmus_response' => $response,
-            //     'target_url' => $target_url,
-            //     'options' => $request_options,
-            //     'method' => $method,
-            //     'order_token' => $orderToken
-            // ]);
 
 
             if ($responseStatusCode>=200 && $responseStatusCode<300) 
