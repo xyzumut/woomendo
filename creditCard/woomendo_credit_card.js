@@ -10,132 +10,6 @@ jQuery(document).on('updated_checkout', function (param) {
     const ccsingle = document.getElementById('ccsingle');
 
 
-
-    const deneme = () => {
-        alert('Heyy');
-    }
-
-
-
-    // Benim Kodlarım
-    const mySbmtBtn = document.getElementById('mySubmitButton')
-    const paymendo_form = document.getElementById('paymendo_form')
-    // Benim Kodlarım
-
-
-    // var refresh_iframe = () => {
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     iframe.parentElement.removeChild(iframe);
-    //     let newIframe = document.createElement('iframe');
-    //     newIframe.style.display = "none";
-    //     newIframe.id = 'form-submit-iframe';
-    //     document.getElementById('iframe-container').appendChild(newIframe);
-    // }
-    // paymendo_form.addEventListener('submit', async function (ev)  {  
-    //     ev.preventDefault();
-    //     let formClone = this.cloneNode(true);
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
-    //     formClone.method = "POST";
-    //     let docIframe = iframe.contentDocument || iframe.contentWindow.document;
-    //     docIframe.body.appendChild(formClone);
-    //     formClone.style.display = "none";
-    //     formClone.submit();
-
-    //     iframe.style.display = "block";
-    //     iframe.style.width = 500;
-    //     iframe.style.height = 500;
-    //     iframe.style.border = "0";
-    // });
-    window.addEventListener(
-        "message",
-        (event) => {
-          let messageData = event.data;
-          let messageType = messageData.event;
-          if(messageType === "payment_failed")
-          {
-            let message = messageData.message;
-            // refresh_iframe();
-            alert(message);
-          } else if (messageType === "payment_success") {
-            alert("Ödeme tamamlandı!");
-            // window.location.href = '/wp/faturalar-sayfasi/';
-          }
-        },
-        false
-    );
-
-    // Benim Kodlarım
-
-    // mySbmtBtn.addEventListener('click', (e) => {
-    //     const toast_message = document.getElementById('toast_message').innerText;
-    //     if (!(name.value.length >= 5 && cardnumber.value.length > 18 && expirationdate.value.length>4 && securitycode.value.length > 2)) {
-    //         e.preventDefault()
-    //         toastNotif({
-    //             text: toast_message,
-    //             color: '#000222',
-    //             timeout: 5000,
-    //         });
-    //     }
-    //     else{
-    //         // Bu elseye girdiyse inputlar tamdır
-    //         // const final = {
-    //         //     cardnumber: cardnumber.value,
-    //         //     name: name.value,
-    //         //     expirationdate: expirationdate.value,
-    //         //     securitycode: securitycode.value
-    //         // }
-    //     }
-    // }) 
-    // name.addEventListener('input', () => {
-    //     if(name.value.length == 0){
-    //         name.style.borderColor = 'yellow'
-    //     }
-    //     else if (name.value.length < 5) {
-    //         name.style.borderColor = 'red'
-    //     }
-    //     else if(name.value.length >= 5){
-    //         name.style.borderColor = 'green'
-    //     }
-    // });
-    // cardnumber.addEventListener('input', () => {
-    //     if(cardnumber.value.length > 18){
-    //         cardnumber.style.borderColor = 'green'
-    //     }
-    //     else if(cardnumber.value.length == 0){
-    //         cardnumber.style.borderColor = 'yellow'
-    //     }
-    //     else{
-    //         cardnumber.style.borderColor = 'red'
-    //     }
-    // });
-    // expirationdate.addEventListener('input', (e) => {
-    //     console.log(expirationdate.value)
-    //     if (expirationdate.value.length>4) {
-    //         expirationdate.style.borderColor = 'green'
-    //     }
-    //     else if (expirationdate.value.length == 0) {
-    //         expirationdate.style.borderColor = 'yellow'
-    //     }
-    //     else{
-    //         expirationdate.style.borderColor = 'red'
-    //     }
-    // });
-    // securitycode.addEventListener('input', () => {
-    //     console.log(securitycode.value.length)
-    //     if (securitycode.value.length > 2) {
-    //         securitycode.style.borderColor = 'green'
-    //     }
-    //     else if(securitycode.value.length == 0){
-    //         securitycode.style.borderColor = 'yellow'
-    //     }
-    //     else{
-    //         securitycode.style.borderColor = 'red'
-    //     }
-    // });
-
-    // Benim Kodlarım
-
     let cctype = null;
     //Mask the Credit Card Number Input
     var cardnumber_mask = new IMask(cardnumber, {
@@ -388,6 +262,11 @@ jQuery(document).on('updated_checkout', function (param) {
 
 });
 
+
+
+
+
+
 jQuery(document)
 .on("ajaxSend", function(event, xhr, options){
 
@@ -438,9 +317,44 @@ jQuery(document)
 
     response = await response.json()
 
-    const parser = new DOMParser();
+    const form = response.data.attributes.form;
 
-    const form = parser.parseFromString(response.data.attributes.form, 'text/html');
-   
-    
+    // const parser = new DOMParser();
+
+    // const form = parser.parseFromString(response.data.attributes.form, 'text/html');
+
+    // console.log(form)
+
+
+    const iframe = document.getElementById('paymendo-payment-iframe')
+
+    let iframeDocument = iframe.contentDocument || iframe.contentWindow.document; // iframe'in içerik belgesine erişin
+
+    iframeDocument.body.innerHTML = form
 });
+
+window.addEventListener(
+    "message",
+    (event) => {
+      let messageData = event.data;
+      let messageType = messageData.event;
+      if(messageType === "payment_failed")
+      {
+        let message = messageData.message;
+        refresh_iframe();
+        alert(message);
+      } else if (messageType === "payment_success") {
+        alert("Ödeme tamamlandı!");
+        // window.location.href = '/wp/faturalar-sayfasi/';
+      }
+    },
+    false
+);
+var refresh_iframe = () => {
+    let iframe = document.getElementById('paymendo-payment-iframe');
+    iframe.parentElement.removeChild(iframe);
+    let newIframe = document.createElement('iframe');
+    newIframe.style.display = "none";
+    newIframe.id = 'paymendo-payment-iframe';
+    document.getElementById('paymendo-payment-iframe-container').appendChild(newIframe);
+}
