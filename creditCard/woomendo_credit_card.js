@@ -265,8 +265,6 @@ jQuery(document).on('updated_checkout', function (param) {
 
 
 
-
-
 jQuery(document)
 .on("ajaxSend", function(event, xhr, options){
 
@@ -312,6 +310,7 @@ jQuery(document)
         })
     }
 
+    // document.getElementsByClassName('woocommerce-error')[0].innerHTML = '<div v-if="loading" class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
 
     let response = await fetch(target_url_with_token, myOptions);
 
@@ -319,18 +318,10 @@ jQuery(document)
 
     const form = response.data.attributes.form;
 
-    // const parser = new DOMParser();
-
-    // const form = parser.parseFromString(response.data.attributes.form, 'text/html');
-
-    // console.log(form)
-
-
     const iframe = document.getElementById('paymendo-payment-iframe')
 
-    let iframeDocument = iframe.contentDocument || iframe.contentWindow.document; // iframe'in içerik belgesine erişin
+    iframe.srcdoc = form;
 
-    iframeDocument.body.innerHTML = form
 });
 
 window.addEventListener(
@@ -341,15 +332,18 @@ window.addEventListener(
       if(messageType === "payment_failed")
       {
         let message = messageData.message;
+        // message = message+'\nSiparişiniz oluşturuldu ancak ödeme işlemi sağlanamadı'
+        // document.getElementsByClassName('woocommerce-error')[0].innerText = message;
         refresh_iframe();
-        alert(message);
       } else if (messageType === "payment_success") {
+        message = message+'\nSiparişiniz oluşturuldu ve ödeme işlemi başarılı'
+
         alert("Ödeme tamamlandı!");
-        // window.location.href = '/wp/faturalar-sayfasi/';
       }
     },
     false
 );
+
 var refresh_iframe = () => {
     let iframe = document.getElementById('paymendo-payment-iframe');
     iframe.parentElement.removeChild(iframe);

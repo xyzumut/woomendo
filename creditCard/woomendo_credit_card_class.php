@@ -139,7 +139,7 @@ class CreditCard{
                 <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_securitycode" maxlength="3" value="">
             </div>
             <div id="paymendo-payment-iframe-container">
-                <iframe id="paymendo-payment-iframe" title="my_title"></iframe>
+                <iframe id="paymendo-payment-iframe" title="my_title" style="display:none;"></iframe>
             </div>
         </div>';
         return $return;        

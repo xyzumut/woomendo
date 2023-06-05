@@ -179,7 +179,6 @@
 
                 }
                 catch (Exception $error){
-                    die('1');
                     wc_add_notice($error->getMessage(), 'error' );
                     return ;
                 }
@@ -206,7 +205,8 @@
                 ];
 
                 return array(
-                    'result' => 'success',
+                    'result' => 'failure',
+                    'message' => 'Test',
                     'ajax_datas' => $ajax_
                 );
             }
