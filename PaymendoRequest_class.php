@@ -226,30 +226,5 @@
             
             throw new Exception(__('An error occurred, base api url may be wrong!', '@1@'));
         }
-
-        /*
-            public function makePaymentWithoutAccessToken($creditCardData, $order_id, $refresh=false){
-
-                $orderToken = $this->getOrderToken($order_id);
-
-                $endpoint_url = PaymendoRequest::woomendo_unAuth_payment_api_url."/$orderToken";
-
-                $data = (object) [
-                    'data' => [
-                        'attributes' => [
-                            "cc_number"=> $creditCardData['cc_number'],
-                            "cc_cvv"=> $creditCardData['cc_cvv'],
-                            "cc_exp"=> $creditCardData['cc_exp'],
-                            "cc_holder"=> $creditCardData['cc_holder'],
-                            "order_id"=> $creditCardData['order_id'],
-                            "installment"=> $creditCardData['installment']
-                        ]
-                    ]
-                ];
-
-                return $this->requestWoomendo( $endpoint_url, $data, $refresh );
-            }
-        */
-
     }
 ?>

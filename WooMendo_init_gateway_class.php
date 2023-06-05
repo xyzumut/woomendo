@@ -108,118 +108,57 @@
             // wc_clear_notices();
             global $woocommerce;
 
-            if ( !empty($_POST['creditcard_ownerName']) && !empty($_POST['creditcard_cardnumber']) && !empty($_POST['creditcard_expirationdate']) && !empty($_POST['creditcard_securitycode'])) {
-                
+            # sipariş bilgilerini aldık
+            $order = wc_get_order( $order_id );  
+            # sipariş bilgilerini aldık
 
-                # Kredi Kartı Bilgilerini Aldık 
-                $woomendo_card_holder = $_POST['creditcard_ownerName'] ;
-                $woomendo_card_number = $_POST['creditcard_cardnumber'] ;
-                $woomendo_card_expDate = $_POST['creditcard_expirationdate'] ;
-                $woomendo_card_securityCode = $_POST['creditcard_securitycode'] ;
-                # Kredi Kartı Bilgilerini Aldık 
-                
-                # Güvenlik kodunun 3 hane olup olmadığına bak
-                if (strlen($woomendo_card_securityCode)!==3 ){ 
-                    wc_add_notice(__('Credit card security number must be 3 digits.', '@1@'), 'error' );
-                    return ;
-                }
-                # Güvenlik kodunun 3 hane olup olmadığına bak
+            try{
 
-                # Kart numarasının 16 hane olup olmadığına ve tamamen sayılardan oluşup oluşmadığına bak
-                $woomendo_card_number = implode('', explode(' ', $woomendo_card_number)); # boşlukları ayıkladık
-            
-                $characters = str_split($woomendo_card_number); # diziye çevirdik
-                
-                foreach ($characters as $char) {
-                    if (!is_numeric($char)) {
-                        wc_add_notice(__('Credit card number must be numbers only.', '@1@'), 'error' );
-                        return ;
-                    }
-                }
-            
-                if (strlen($woomendo_card_number) !== 16) {
-                    wc_add_notice(__('Credit card number must be 16 digits.', '@1@'), 'error' );
-                    return ;
-                }
-                # Kart numarasının 16 hane olup olmadığına ve tamamen sayılardan oluşup oluşmadığına bak
+                $order->set_status('pending');
+                $order->reduce_order_stock();
+                $order->save();
 
-                # Son kullanma tarihinin formatına bak
-                if (strlen($woomendo_card_expDate)!==5 || $woomendo_card_expDate[2]!=='/'){ 
-                    wc_add_notice(__('credit card expiration date format is incorrect.', '@1@'), 'error' );
-                    return ;
-                }
-
-                $month = explode('/', $woomendo_card_expDate)[0];
-
-                if (intval($month)>12){
-                    wc_add_notice(__('Month value cannot be greater than 12.', '@1@'), 'error' );
-                    return ;
-                }
-                # Son kullanma tarihinin formatına bak
-
-                # sipariş bilgilerini aldık
-                $order = wc_get_order( $order_id );  
-                # sipariş bilgilerini aldık
-
-                try{
-
-                    $order->set_status('pending');
-                    $order->reduce_order_stock();
-                    $order->save();
-
-                    #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                    $order_comments = $_POST['order_comments'] ; # not
-                    $currenyCode = 'TRY' ;
-                    $amount = $order->get_total(); # Total fiyatı verir 
-                    $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
-                    $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
-                    #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
+                #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
+                $order_comments = $_POST['order_comments'] ; # not
+                $currenyCode = 'TRY' ;
+                $amount = $order->get_total(); # Total fiyatı verir 
+                $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
+                $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
+                #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
                     
-                    $order_token = $this->paymendoRequest->getOrderToken($order_api_id);
+                $order_token = $this->paymendoRequest->getOrderToken($order_api_id);
 
-                }
-                catch (Exception $error){
-                    wc_add_notice($error->getMessage(), 'error' );
-                    return ;
-                }
-                $base_url = $this->paymendoRequest->get_woomendo_base_api_url();
-                # Base Urldeki düzeltmeler
-                if (substr($base_url,strlen($base_url)-1,1) === '/') {
-                    $base_url = substr($base_url,0,strlen($base_url)-1);
-                }
-                if (substr($base_url,0,4) !== 'http') {
-                    $base_url = 'http://'.$base_url;
-                }
-                # Base Urldeki düzeltmeler
-                $ajax_ = [
-                    'credit_card_datas' => [
-                        'woomendo_card_holder' => $woomendo_card_holder,
-                        'woomendo_card_number' => $woomendo_card_number,
-                        'woomendo_card_expDate' => $woomendo_card_expDate,
-                        'woomendo_card_securityCode' => $woomendo_card_securityCode
-                    ],
-                    'order_id_in_api' => $order_api_id ,
-                    'order_id_in_woocommerce' => $order_id ,
-                    'amount' => $amount,
-                    'target_url_with_token' => $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token"
-                ];
-
-                return array(
-                    'result' => 'failure',
-                    'message' => 'Test',
-                    'ajax_datas' => $ajax_
-                );
             }
-
-            # Kredi kartı bilgilerinden herhangi birisi boş ise uyarı ver
-            else if (empty($_POST['creditcard_ownerName']) || empty($_POST['creditcard_cardnumber']) || empty($_POST['creditcard_expirationdate']) || empty($_POST['creditcard_securitycode'])) {
-                wc_add_notice(__('Credit card information cannot be empty', '@1@'), 'error' );
+            catch (Exception $error){
+                wc_add_notice($error->getMessage(), 'error' );
                 return ;
             }
-            # Kredi kartı bilgilerinden herhangi birisi boş ise uyarı ver
-            
-            // wc_add_notice(  'Bir hata oluştu, lütfen tekrar deneyin', 'error' );
-            // return;
+            $base_url = $this->paymendoRequest->get_woomendo_base_api_url();
+            # Base Urldeki düzeltmeler
+            if (substr($base_url,strlen($base_url)-1,1) === '/') {
+                $base_url = substr($base_url,0,strlen($base_url)-1);
+            }
+            if (substr($base_url,0,4) !== 'http') {
+                $base_url = 'http://'.$base_url;
+            }
+            # Base Urldeki düzeltmeler
+            $ajax_ = [
+                'order_id_in_api' => $order_api_id ,
+                'target_url_with_token' => $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token"
+            ];
+
+            add_filter('woocommerce_payment_successful_result', function ($result, $order_id){
+                $result['result'] = 'failure';
+                $result['messages'] = '<h1 style="color:red;">Test</h1>';
+                return $result;  
+            }, 10, 2);
+            wc_add_notice('İşleminiz Devam Etmekte...', 'info' );
+                
+            return array(
+                'result' => 'success',
+                'message' => 'Test',
+                'ajax_datas' => $ajax_
+            );
         }
     }
 ?>

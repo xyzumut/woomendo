@@ -282,14 +282,17 @@ jQuery(document)
     if (xhr_datas === null) 
         return false;
     
-    const amount = xhr_datas.amount;
-    const order_id_in_woocommerce = xhr_datas.order_id_in_woocommerce;
     const order_id_in_api = xhr_datas.order_id_in_api;
-    const woomendo_card_expDate = xhr_datas.credit_card_datas.woomendo_card_expDate;
-    const woomendo_card_holder = xhr_datas.credit_card_datas.woomendo_card_holder;
-    const woomendo_card_number = xhr_datas.credit_card_datas.woomendo_card_number;
-    const woomendo_card_securityCode = xhr_datas.credit_card_datas.woomendo_card_securityCode;
     const target_url_with_token = xhr_datas.target_url_with_token;
+    /* 
+        kredi kartı numarasında boşluklar kaldırılacak
+        TEST yazan yerde bir popup olacak 
+        popup üzerinde loading yapılacak    
+    */
+    const woomendo_card_expDate = document.getElementById('expirationdate').value;
+    const woomendo_card_holder = document.getElementById('holder_name').value;
+    const woomendo_card_number = document.getElementById('cardnumber').value;
+    const woomendo_card_securityCode = document.getElementById('securitycode').value;
 
     const myOptions = {
         headers: {
@@ -332,6 +335,7 @@ window.addEventListener(
       if(messageType === "payment_failed")
       {
         let message = messageData.message;
+        alert(message)
         // message = message+'\nSiparişiniz oluşturuldu ancak ödeme işlemi sağlanamadı'
         // document.getElementsByClassName('woocommerce-error')[0].innerText = message;
         refresh_iframe();
