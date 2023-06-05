@@ -344,7 +344,7 @@ input {
 }
 
 .creditcard {
-    width: 100%;
+    width: 350px;
     max-width: 400px;
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;

@@ -19,6 +19,8 @@
         const woomedo_order_api_url = '/api/v2/order' ;
         const woomendo_unAuth_payment_api_url = '/payment/make' ;
 
+        public function get_woomendo_base_api_url(){return $this->woomendo_base_api_url;}
+
         public function __construct($woomendo_password , $woomendo_mail , $woomendo_base_api_url ) { 
             $this->woomendo_password = $woomendo_password ;
             $this->woomendo_mail = $woomendo_mail ;
@@ -45,7 +47,6 @@
 
         public function loginWithPassword(){
 
-
             $data = (object) [
                 'data' => [
                     'attributes' => [
@@ -55,11 +56,8 @@
                     ]
                 ]
             ];
-
            
             $response = $this->requestWoomendo( PaymendoRequest::woomedo_login_api_url, $data);
-
-            // var_dump($response); access token yanlış cevabı geliyor 
 
             if (isset($response['access_token'])) {
                 update_option( 'woomendo_access_token', $response['access_token'] );
@@ -114,7 +112,6 @@
                 ]
             ];
 
-
             return $this->requestWoomendo( $endpoint_url, $creditCardData, $refresh );
         }
 
@@ -126,28 +123,6 @@
 
             return $response['included'][$order_id][0]['data']['meta_value'];
 
-        }
-
-        public function makePaymentWithoutAccessToken($creditCardData, $order_id, $refresh=false){
-
-            $orderToken = $this->getOrderToken($order_id);
-
-            $endpoint_url = PaymendoRequest::woomendo_unAuth_payment_api_url."/$orderToken";
-
-            $data = (object) [
-                'data' => [
-                    'attributes' => [
-                        "cc_number"=> $creditCardData['cc_number'],
-                        "cc_cvv"=> $creditCardData['cc_cvv'],
-                        "cc_exp"=> $creditCardData['cc_exp'],
-                        "cc_holder"=> $creditCardData['cc_holder'],
-                        "order_id"=> $creditCardData['order_id'],
-                        "installment"=> $creditCardData['installment']
-                    ]
-                ]
-            ];
-
-            return $this->requestWoomendo( $endpoint_url, $data, $refresh );
         }
 
         public function requestWoomendo($endpoint_url = '', $data = array(), $refresh=false, $method = 'POST'){
@@ -252,6 +227,29 @@
             throw new Exception(__('An error occurred, base api url may be wrong!', '@1@'));
         }
 
-    }
+        /*
+            public function makePaymentWithoutAccessToken($creditCardData, $order_id, $refresh=false){
 
+                $orderToken = $this->getOrderToken($order_id);
+
+                $endpoint_url = PaymendoRequest::woomendo_unAuth_payment_api_url."/$orderToken";
+
+                $data = (object) [
+                    'data' => [
+                        'attributes' => [
+                            "cc_number"=> $creditCardData['cc_number'],
+                            "cc_cvv"=> $creditCardData['cc_cvv'],
+                            "cc_exp"=> $creditCardData['cc_exp'],
+                            "cc_holder"=> $creditCardData['cc_holder'],
+                            "order_id"=> $creditCardData['order_id'],
+                            "installment"=> $creditCardData['installment']
+                        ]
+                    ]
+                ];
+
+                return $this->requestWoomendo( $endpoint_url, $data, $refresh );
+            }
+        */
+
+    }
 ?>

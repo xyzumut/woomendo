@@ -106,7 +106,6 @@
         public function process_payment( $order_id ) {
             
             // wc_clear_notices();
-
             global $woocommerce;
 
             if ( !empty($_POST['creditcard_ownerName']) && !empty($_POST['creditcard_cardnumber']) && !empty($_POST['creditcard_expirationdate']) && !empty($_POST['creditcard_securitycode'])) {
@@ -162,17 +161,6 @@
                 $order = wc_get_order( $order_id );  
                 # sipariş bilgilerini aldık
 
-                    /* 
-                        pending: Sipariş henüz işlenmemiş durumda.
-                        on-hold: Sipariş, müşteriye gönderilmeden önce bekletiliyor.
-                        processing: Sipariş, işleme aşamasında, ödeme onayı vb. bekleniyor.
-                        completed: Sipariş başarıyla tamamlandı.
-                        cancelled: Sipariş müşteri veya yönetici tarafından iptal edildi.
-                        refunded: Siparişin tamamı iade edildi.
-                        failed: Siparişin ödeme işlemi başarısız oldu.
-                        $order->payment_complete()  processing moduna alıyor
-                    */
-
                 try{
 
                     $order->set_status('pending');
@@ -187,33 +175,40 @@
                     $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
                     #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
                     
+                    $order_token = $this->paymendoRequest->getOrderToken($order_api_id);
+
                 }
                 catch (Exception $error){
+                    die('1');
                     wc_add_notice($error->getMessage(), 'error' );
                     return ;
                 }
+                $base_url = $this->paymendoRequest->get_woomendo_base_api_url();
+                # Base Urldeki düzeltmeler
+                if (substr($base_url,strlen($base_url)-1,1) === '/') {
+                    $base_url = substr($base_url,0,strlen($base_url)-1);
+                }
+                if (substr($base_url,0,4) !== 'http') {
+                    $base_url = 'http://'.$base_url;
+                }
+                # Base Urldeki düzeltmeler
+                $ajax_ = [
+                    'credit_card_datas' => [
+                        'woomendo_card_holder' => $woomendo_card_holder,
+                        'woomendo_card_number' => $woomendo_card_number,
+                        'woomendo_card_expDate' => $woomendo_card_expDate,
+                        'woomendo_card_securityCode' => $woomendo_card_securityCode
+                    ],
+                    'order_id_in_api' => $order_api_id ,
+                    'order_id_in_woocommerce' => $order_id ,
+                    'amount' => $amount,
+                    'target_url_with_token' => $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token"
+                ];
 
-                /* 
-
-                    Bu kısımda genel form onaylanacak ve bunu javascript tarafında ben yakalayabiliyor olacağım
-                
-                */
-
-                
-                $redirect_url = "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment&woomendo_card_holder=$woomendo_card_holder&woomendo_card_number=$woomendo_card_number&woomendo_card_expDate=$woomendo_card_expDate&woomendo_card_securityCode=$woomendo_card_securityCode&order_api_id=$order_api_id&order_woocommerce_id=$order_id";
-                
-                // return array(
-                //     'result' => 'success',
-                //     'redirect' => $redirect_url
-                // );
                 return array(
-                    'result' => 'error',
-                    'message' => 'deneme mesajımız'
+                    'result' => 'success',
+                    'ajax_datas' => $ajax_
                 );
-                // return array(
-                //     'result' => 'success',
-                //     'redirect' => $this->get_return_url( $order )
-                // );
             }
 
             # Kredi kartı bilgilerinden herhangi birisi boş ise uyarı ver
@@ -223,8 +218,8 @@
             }
             # Kredi kartı bilgilerinden herhangi birisi boş ise uyarı ver
             
-            wc_add_notice(  'Bir hata oluştu, lütfen tekrar deneyin', 'error' );
-            return;
+            // wc_add_notice(  'Bir hata oluştu, lütfen tekrar deneyin', 'error' );
+            // return;
         }
     }
 ?>

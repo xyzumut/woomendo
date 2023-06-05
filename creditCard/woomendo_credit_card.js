@@ -386,58 +386,61 @@ jQuery(document).on('updated_checkout', function (param) {
         document.querySelector('.creditcard').classList.add('flipped');
     });
 
-
-
 });
 
-jQuery(document).on("ajaxSend", function(event, xhr, options){
-}).on("ajaxComplete", function(event, xhr, options){
+jQuery(document)
+.on("ajaxSend", function(event, xhr, options){
+
+})
+.on("ajaxComplete", async function(event, xhr, options){
     let url = options.url;
     if(url !== wc_checkout_params.checkout_url)
         return false;
     let data = options.data;
     if(data.indexOf("payment_method=woomendo") === -1)
         return false;
-        
-    // ev.preventDefault();
-    // let formClone = document.getElementsByName('checkout')[0].cloneNode(true);
-    // let iframe = document.getElementById('form-submit-iframe');
+
+    const xhr_datas = xhr.responseJSON.ajax_datas ?? null;
+    
+    if (xhr_datas === null) 
+        return false;
+    
+    const amount = xhr_datas.amount;
+    const order_id_in_woocommerce = xhr_datas.order_id_in_woocommerce;
+    const order_id_in_api = xhr_datas.order_id_in_api;
+    const woomendo_card_expDate = xhr_datas.credit_card_datas.woomendo_card_expDate;
+    const woomendo_card_holder = xhr_datas.credit_card_datas.woomendo_card_holder;
+    const woomendo_card_number = xhr_datas.credit_card_datas.woomendo_card_number;
+    const woomendo_card_securityCode = xhr_datas.credit_card_datas.woomendo_card_securityCode;
+    const target_url_with_token = xhr_datas.target_url_with_token;
+
+    const myOptions = {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body : JSON.stringify({
+            data:{
+                attributes:{
+                    cc_number: woomendo_card_number,
+                    cc_cvv: woomendo_card_securityCode,
+                    cc_exp: woomendo_card_expDate,
+                    cc_holder: woomendo_card_holder,
+                    order_id: order_id_in_api,
+                    installment: '1'
+                }
+            }
+        })
+    }
 
 
-    // formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
-    // formClone.method = "POST";
-    // let docIframe = iframe.contentDocument || iframe.contentWindow.document;
-    // docIframe.body.appendChild(formClone);
-    // formClone.style.display = "none";
-    // formClone.submit();
-    // iframe.style.display = "block";
-    // iframe.style.width = 500;
-    // iframe.style.height = 500;
-    // iframe.style.border = "0";
+    let response = await fetch(target_url_with_token, myOptions);
+
+    response = await response.json()
+
+    const parser = new DOMParser();
+
+    const form = parser.parseFromString(response.data.attributes.form, 'text/html');
+   
+    
 });
-
-
-    // var refresh_iframe = () => {
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     iframe.parentElement.removeChild(iframe);
-    //     let newIframe = document.createElement('iframe');
-    //     newIframe.style.display = "none";
-    //     newIframe.id = 'form-submit-iframe';
-    //     document.getElementById('iframe-container').appendChild(newIframe);
-    // }
-    // paymendo_form.addEventListener('submit', async function (ev)  {  
-    //     ev.preventDefault();
-    //     let formClone = this.cloneNode(true);
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
-    //     formClone.method = "POST";
-    //     let docIframe = iframe.contentDocument || iframe.contentWindow.document;
-    //     docIframe.body.appendChild(formClone);
-    //     formClone.style.display = "none";
-    //     formClone.submit();
-
-    //     iframe.style.display = "block";
-    //     iframe.style.width = 500;
-    //     iframe.style.height = 500;
-    //     iframe.style.border = "0";
-    // });
