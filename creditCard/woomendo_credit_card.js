@@ -284,6 +284,7 @@ jQuery(document)
     
     const order_id_in_api = xhr_datas.order_id_in_api;
     const target_url_with_token = xhr_datas.target_url_with_token;
+    const woomendo_spinner = '<div v-if="loading" class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
     /* 
         kredi kartı numarasında boşluklar kaldırılacak
         TEST yazan yerde bir popup olacak 
@@ -291,7 +292,7 @@ jQuery(document)
     */
     const woomendo_card_expDate = document.getElementById('expirationdate').value;
     const woomendo_card_holder = document.getElementById('holder_name').value;
-    const woomendo_card_number = document.getElementById('cardnumber').value;
+    const woomendo_card_number = document.getElementById('cardnumber').value.replaceAll(' ', '');
     const woomendo_card_securityCode = document.getElementById('securitycode').value;
 
     const myOptions = {
@@ -312,8 +313,6 @@ jQuery(document)
             }
         })
     }
-
-    // document.getElementsByClassName('woocommerce-error')[0].innerHTML = '<div v-if="loading" class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
 
     let response = await fetch(target_url_with_token, myOptions);
 
@@ -336,8 +335,10 @@ window.addEventListener(
       {
         let message = messageData.message;
         alert(message)
-        // message = message+'\nSiparişiniz oluşturuldu ancak ödeme işlemi sağlanamadı'
-        // document.getElementsByClassName('woocommerce-error')[0].innerText = message;
+        
+
+
+
         refresh_iframe();
       } else if (messageType === "payment_success") {
         message = message+'\nSiparişiniz oluşturuldu ve ödeme işlemi başarılı'

@@ -149,14 +149,12 @@
 
             add_filter('woocommerce_payment_successful_result', function ($result, $order_id){
                 $result['result'] = 'failure';
-                $result['messages'] = '<h1 style="color:red;">Test</h1>';
+                $result['messages'] = /*html*/'<div id="woomendo_notice_container"> <div id="woomendo_first_notice">İşleminiz Devam Etmekte...</div> </div>';
                 return $result;  
             }, 10, 2);
-            wc_add_notice('İşleminiz Devam Etmekte...', 'info' );
                 
             return array(
                 'result' => 'success',
-                'message' => 'Test',
                 'ajax_datas' => $ajax_
             );
         }
