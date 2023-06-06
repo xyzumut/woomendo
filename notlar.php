@@ -1,7 +1,8 @@
 <?php
 /*
-	
-
+	* Kullanıcı ödeme sayfasında script yine yüklenmiyor ona bakılacak
+	* Sipariş oluşturulduğunda bu sipariş için bir token tutmam gerekiyor, bu token benzersiz olmalı ve daha sonra api tarafından
+	benim ajaxıma atılacak bir istek içerisinde bunu kontrol edeceğim
 */
 ?>
 <?php
