@@ -349,8 +349,9 @@ window.addEventListener(
             refresh_iframe();
         } 
         else if (messageType === "payment_success") {
-            message = message+'\nSiparişiniz oluşturuldu ve ödeme işlemi başarılı'
-            alert("Ödeme tamamlandı!");
+            /* 
+                burada başarılıya yönlendireceğiz
+            */
         }
     },
     false

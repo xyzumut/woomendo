@@ -107,8 +107,15 @@
             # sipariş bilgilerini aldık
 
             try{
+
+                if (empty(get_post_meta( $order_id, 'woomendo_paymendo_payment_control_token', true))) {
+                    $token = substr(uniqid(), 0, 16);
+                    $order->reduce_order_stock();
+                    update_post_meta( $order_id, 'woomendo_paymendo_payment_control_token', $token);
+                }
+
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                $my_comment = ['order_wordpress_id' => $order_id, 'unatuh_payment_token' => 'asdasdasd', 'callback' => 'oluştruacağın linki at buraya'];
+                $my_comment = json_encode(["order_woocommerce_id" => $order_id, "unatuh_payment_control_token_for_paymendo_api" => get_post_meta( $order_id, "woomendo_paymendo_payment_control_token", true), "callback" => "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_payment_control"]);
                 $currenyCode = 'TRY' ;
                 $amount = $order->get_total(); # Total fiyatı verir 
                 $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $my_comment, 'currency_code' => $currenyCode));
@@ -116,12 +123,6 @@
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
 
                 $order_token = $this->paymendoRequest->getOrderToken($order_api_id);//postmetada sakla bunu, ordser token yoksa stoktan düş yoksa
-
-                if (empty(get_post_meta($order_id, 'woomendo_order_token'))) {
-                    $order->reduce_order_stock();
-                    update_post_meta( $order_id, 'woomendo_order_token', $order_token );
-                } 
-
             }
             catch (Exception $error){
                 wc_add_notice($error->getMessage(), 'error' );

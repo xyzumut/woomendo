@@ -23,16 +23,49 @@ function make_payment_function(){
 	die('x1');
 }
 
-
 add_action('wp_ajax_paymendo_payment_control'		, 'make_payment_control_action' );
 add_action('wp_ajax_nopriv_paymendo_payment_control', 'make_payment_control_action' );
-//http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_payment_control&token=
+
 function make_payment_control_action(){
-	if (isset($_POST['token'], $_POST['order_id'] )) {
-		
+	if (!isset($_POST['token'], $_POST['order_id'], $_POST['is_it_paid'] )) {
+		wp_send_json( [
+			'status' => false,
+			'message' => "Must be 'is_it_paid', 'token' and 'order_id'!",
+			'info' => null
+		]);
+	}
+
+	if ($_POST['token'] === get_post_meta( $_POST['order_id'], 'woomendo_paymendo_payment_control_token', true )) {
+		# token doğru ve ilgili postmeta kaydı bulunuyor demektir
+
+		$order = wc_get_order( (int)$_POST['order_id'] );  
+
+		if (json_decode($_POST['is_it_paid']) === true) {
+
+			$order->set_status('processing');
+			$order->save();
+
+			wp_send_json( [
+				'status' => true,
+				'message' => 'Order Payment Confirmed',
+				'info' => [
+					'order_id' => $_POST['order_id'],
+					'order_status' => $order->get_status()
+				],
+			]);
+		}
+
+		else if(json_decode($_POST['is_it_paid']) === false){
+			wp_send_json( [
+				'status' => false,
+				'message' => 'Order Payment Not Confirmed',
+				'info' => null,
+			]);
+		}
 	}
 	wp_send_json( [
 		'status' => false,
-		'message' => 'Must be "token" and "order_id"!'
+		'message' => 'Something went wrong',
+		'info' => null,
 	]);
 }

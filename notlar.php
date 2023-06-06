@@ -1,8 +1,10 @@
 <?php
 /*
+	Yapılacaklar:
 	* Kullanıcı ödeme sayfasında script yine yüklenmiyor ona bakılacak
-	* Sipariş oluşturulduğunda bu sipariş için bir token tutmam gerekiyor, bu token benzersiz olmalı ve daha sonra api tarafından
-	benim ajaxıma atılacak bir istek içerisinde bunu kontrol edeceğim
+	* Fatih bey bana ödeme ile alakalı api tarafında yeni bir yapı hazırlayacak onu ordan sonra ilerleteceğim
+	06.06.2023 Son durum
+	* Bir action urli ile ödemenin alınıp alınmadığını kontrol edip ona göre aksiyon alan bir wordpress action oluşturdum
 */
 ?>
 <?php
