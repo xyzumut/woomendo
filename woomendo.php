@@ -9,11 +9,6 @@ require (__DIR__).'/creditCard//woomendo_credit_card_class.php';
 require (__DIR__).'/PaymendoRequest_class.php';
 require (__DIR__).'/WooMendo_init_gateway_class.php';
 
-/* 
-	kredi kartı ülke değiştirmedikçe çalışıyor ve kredi kartına girilen değerleride tutabildim
-	api ayarlarının girilebilmesi için ödeme filedlarını özelleştirip bunları kullanmayı çözmem gerek
-*/
-
 
 // Bu hook sınıfımı bir WooCommerce ödeme yöntemi olarak kaydeder
 add_filter( 'woocommerce_payment_gateways', function ( $gateways ){
@@ -24,36 +19,53 @@ add_filter( 'woocommerce_payment_gateways', function ( $gateways ){
 add_action('wp_ajax_paymendo_make_payment', 'make_payment_action');
 add_action('wp_ajax_nopriv_paymendo_make_payment', 'make_payment_action');
 
-function make_payment_action(){
+function make_payment_function(){
+	die('x1');
+}
 
-	global $woocommerce;
-	$order_woo_commerce_id = $_GET['order_woocommerce_id'];
+add_action('wp_ajax_paymendo_payment_control'		, 'make_payment_control_action' );
+add_action('wp_ajax_nopriv_paymendo_payment_control', 'make_payment_control_action' );
 
-	
-	$creditCardData = array(
-		'cc_number' => $_GET['woomendo_card_number'],
-		'cc_cvv' => $_GET['woomendo_card_securityCode'],
-		'cc_exp' => $_GET['woomendo_card_expDate'],
-		'cc_holder' => $_GET['woomendo_card_holder'] ,
-		'order_id' => $_GET['order_api_id'],
-		'installment' => '1'
-	);
-	// $creditCardData = array(
-	// 	'cc_number' => '5571135571135571',
-	// 	'cc_cvv' => '000',
-	// 	'cc_exp' => '12/26',
-	// 	'cc_holder' => 'umut gedik' ,
-	// 	'order_id' => '406' ,
-	// 	'installment' => '1'
-	// );
-	$paymendo_request = new PaymendoRequest(get_option('login_password'), get_option('login_mail'), get_option('base_api_url'));
+function make_payment_control_action(){
+	if (!isset($_POST['token'], $_POST['order_id'], $_POST['is_it_paid'] )) {
+		wp_send_json( [
+			'status' => false,
+			'message' => "Must be 'is_it_paid', 'token' and 'order_id'!",
+			'info' => null
+		]);
+	}
 
-	$payment_response = $paymendo_request->makePaymentWithoutAccessToken($creditCardData, $_GET['order_api_id']);
+	if ($_POST['token'] === get_post_meta( $_POST['order_id'], 'woomendo_paymendo_payment_control_token', true )) {
+		# token doğru ve ilgili postmeta kaydı bulunuyor demektir
 
-	
-	// $form = $payment_response['data']['attributes']['form'];
-	// $form = html_entity_decode($form);
-	// var_dump($payment_response);
+		$order = wc_get_order( (int)$_POST['order_id'] );  
 
+		if (json_decode($_POST['is_it_paid']) === true) {
 
+			$order->set_status('processing');
+			$order->save();
+
+			wp_send_json( [
+				'status' => true,
+				'message' => 'Order Payment Confirmed',
+				'info' => [
+					'order_id' => $_POST['order_id'],
+					'order_status' => $order->get_status()
+				],
+			]);
+		}
+
+		else if(json_decode($_POST['is_it_paid']) === false){
+			wp_send_json( [
+				'status' => false,
+				'message' => 'Order Payment Not Confirmed',
+				'info' => null,
+			]);
+		}
+	}
+	wp_send_json( [
+		'status' => false,
+		'message' => 'Something went wrong',
+		'info' => null,
+	]);
 }

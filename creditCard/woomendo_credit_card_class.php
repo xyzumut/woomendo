@@ -120,26 +120,25 @@ class CreditCard{
             </div>
             <div class="field-container">
                 <label for="holder_name">'.__('Name', 'Paymendo').'</label>
-                <input id="holder_name" maxlength="20" type="text" name="creditcard_ownerName" value="">
+                <input id="holder_name" maxlength="20" type="text">
             </div>
             <div class="field-container">
                 <label for="cardnumber">'.__('Card Number', 'Paymendo').'</label>
-                <!-- <span id="generatecard">generate random</span> -->
-                <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_cardnumber" value="">
+                <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric">
                 <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink">
                 </svg>
             </div>
             <div class="field-container">
                 <label for="expirationdate">'.__('Expiry Date (Month/Year)', 'Paymendo').'</label>
-                <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_expirationdate" maxlength="16" value="">
+                <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric">
             </div>
             <div class="field-container">
                 <label for="securitycode">'.__('Security Code', 'Paymendo').'</label>
-                <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" name="creditcard_securitycode" maxlength="3" value="">
+                <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="3">
             </div>
-            <div id="iframe-container">
-                <iframe id="form-submit-iframe" style="display:none;"></iframe>
+            <div id="paymendo-payment-iframe-container">
+                <iframe id="paymendo-payment-iframe" title="my_title" style="display:none;"></iframe>
             </div>
         </div>';
         return $return;        

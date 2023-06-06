@@ -10,132 +10,6 @@ jQuery(document).on('updated_checkout', function (param) {
     const ccsingle = document.getElementById('ccsingle');
 
 
-
-    const deneme = () => {
-        alert('Heyy');
-    }
-
-
-
-    // Benim Kodlarım
-    const mySbmtBtn = document.getElementById('mySubmitButton')
-    const paymendo_form = document.getElementById('paymendo_form')
-    // Benim Kodlarım
-
-
-    // var refresh_iframe = () => {
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     iframe.parentElement.removeChild(iframe);
-    //     let newIframe = document.createElement('iframe');
-    //     newIframe.style.display = "none";
-    //     newIframe.id = 'form-submit-iframe';
-    //     document.getElementById('iframe-container').appendChild(newIframe);
-    // }
-    // paymendo_form.addEventListener('submit', async function (ev)  {  
-    //     ev.preventDefault();
-    //     let formClone = this.cloneNode(true);
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
-    //     formClone.method = "POST";
-    //     let docIframe = iframe.contentDocument || iframe.contentWindow.document;
-    //     docIframe.body.appendChild(formClone);
-    //     formClone.style.display = "none";
-    //     formClone.submit();
-
-    //     iframe.style.display = "block";
-    //     iframe.style.width = 500;
-    //     iframe.style.height = 500;
-    //     iframe.style.border = "0";
-    // });
-    window.addEventListener(
-        "message",
-        (event) => {
-          let messageData = event.data;
-          let messageType = messageData.event;
-          if(messageType === "payment_failed")
-          {
-            let message = messageData.message;
-            // refresh_iframe();
-            alert(message);
-          } else if (messageType === "payment_success") {
-            alert("Ödeme tamamlandı!");
-            // window.location.href = '/wp/faturalar-sayfasi/';
-          }
-        },
-        false
-    );
-
-    // Benim Kodlarım
-
-    // mySbmtBtn.addEventListener('click', (e) => {
-    //     const toast_message = document.getElementById('toast_message').innerText;
-    //     if (!(name.value.length >= 5 && cardnumber.value.length > 18 && expirationdate.value.length>4 && securitycode.value.length > 2)) {
-    //         e.preventDefault()
-    //         toastNotif({
-    //             text: toast_message,
-    //             color: '#000222',
-    //             timeout: 5000,
-    //         });
-    //     }
-    //     else{
-    //         // Bu elseye girdiyse inputlar tamdır
-    //         // const final = {
-    //         //     cardnumber: cardnumber.value,
-    //         //     name: name.value,
-    //         //     expirationdate: expirationdate.value,
-    //         //     securitycode: securitycode.value
-    //         // }
-    //     }
-    // }) 
-    // name.addEventListener('input', () => {
-    //     if(name.value.length == 0){
-    //         name.style.borderColor = 'yellow'
-    //     }
-    //     else if (name.value.length < 5) {
-    //         name.style.borderColor = 'red'
-    //     }
-    //     else if(name.value.length >= 5){
-    //         name.style.borderColor = 'green'
-    //     }
-    // });
-    // cardnumber.addEventListener('input', () => {
-    //     if(cardnumber.value.length > 18){
-    //         cardnumber.style.borderColor = 'green'
-    //     }
-    //     else if(cardnumber.value.length == 0){
-    //         cardnumber.style.borderColor = 'yellow'
-    //     }
-    //     else{
-    //         cardnumber.style.borderColor = 'red'
-    //     }
-    // });
-    // expirationdate.addEventListener('input', (e) => {
-    //     console.log(expirationdate.value)
-    //     if (expirationdate.value.length>4) {
-    //         expirationdate.style.borderColor = 'green'
-    //     }
-    //     else if (expirationdate.value.length == 0) {
-    //         expirationdate.style.borderColor = 'yellow'
-    //     }
-    //     else{
-    //         expirationdate.style.borderColor = 'red'
-    //     }
-    // });
-    // securitycode.addEventListener('input', () => {
-    //     console.log(securitycode.value.length)
-    //     if (securitycode.value.length > 2) {
-    //         securitycode.style.borderColor = 'green'
-    //     }
-    //     else if(securitycode.value.length == 0){
-    //         securitycode.style.borderColor = 'yellow'
-    //     }
-    //     else{
-    //         securitycode.style.borderColor = 'red'
-    //     }
-    // });
-
-    // Benim Kodlarım
-
     let cctype = null;
     //Mask the Credit Card Number Input
     var cardnumber_mask = new IMask(cardnumber, {
@@ -386,58 +260,108 @@ jQuery(document).on('updated_checkout', function (param) {
         document.querySelector('.creditcard').classList.add('flipped');
     });
 
-
-
 });
 
-jQuery(document).on("ajaxSend", function(event, xhr, options){
-}).on("ajaxComplete", function(event, xhr, options){
+
+
+
+jQuery(document)
+.on("ajaxSend", function(event, xhr, options){
+
+})
+.on("ajaxComplete", async function(event, xhr, options){
     let url = options.url;
     if(url !== wc_checkout_params.checkout_url)
         return false;
     let data = options.data;
     if(data.indexOf("payment_method=woomendo") === -1)
         return false;
-        
-    // ev.preventDefault();
-    // let formClone = document.getElementsByName('checkout')[0].cloneNode(true);
-    // let iframe = document.getElementById('form-submit-iframe');
+
+    const xhr_datas = xhr.responseJSON.ajax_datas ?? null;
+    
+    if (xhr_datas === null) 
+        return false;
+    
+    const order_id_in_api = xhr_datas.order_id_in_api;
+    const target_url_with_token = xhr_datas.target_url_with_token;
+    const woomendo_modal = '<div id="woomendo_modal"><div id="woomendo_modal_main_container"><div id="woomendo_modal_header"><div id="woomendo_modal_header_content">Bankanızdan Cevap Bekleniyor. . .</div><div id="woomendo_modal_header_close_button_container"><div id="woomendo_modal_header_close_button">X</div></div></div><div id="woomendo_modal_content_container"><div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div></div></div>'
+
+    /* 
+        kredi kartı numarasında boşluklar kaldırılacak
+        TEST yazan yerde bir popup olacak 
+        popup üzerinde loading yapılacak    
+    */
+    const woomendo_card_expDate = document.getElementById('expirationdate').value;
+    const woomendo_card_holder = document.getElementById('holder_name').value;
+    const woomendo_card_number = document.getElementById('cardnumber').value.replaceAll(' ', '');
+    const woomendo_card_securityCode = document.getElementById('securitycode').value;
+
+    const myOptions = {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body : JSON.stringify({
+            data:{
+                attributes:{
+                    cc_number: woomendo_card_number,
+                    cc_cvv: woomendo_card_securityCode,
+                    cc_exp: woomendo_card_expDate,
+                    cc_holder: woomendo_card_holder,
+                    order_id: order_id_in_api,
+                    installment: '1'
+                }
+            }
+        })
+    }
 
 
-    // formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
-    // formClone.method = "POST";
-    // let docIframe = iframe.contentDocument || iframe.contentWindow.document;
-    // docIframe.body.appendChild(formClone);
-    // formClone.style.display = "none";
-    // formClone.submit();
-    // iframe.style.display = "block";
-    // iframe.style.width = 500;
-    // iframe.style.height = 500;
-    // iframe.style.border = "0";
+
+    document.getElementById('woomendo_first_notice').remove() // Mecburi aradaki kısa uyarıyı sildiö
+
+    document.getElementById('woomendo_notice_container').innerHTML = woomendo_modal // modalımı o container'ın içine ekledim
+
+    document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
+
+    let response = await fetch(target_url_with_token, myOptions);
+
+    response = await response.json()
+
+    const form = response.data.attributes.form;
+
+    const iframe = document.getElementById('paymendo-payment-iframe')
+
+    iframe.srcdoc = form;
+
 });
 
+window.addEventListener(
+    "message",
+    (event) => {
+        document.getElementById('woomendo_modal_header_content').innerText = 'Bankanızdan cevap alındı.'
+        document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
+        document.getElementById('woomendo_modal_header_close_button').style.visibility='visible'
+        let messageData = event.data;
+        let messageType = messageData.event;
+        if(messageType === "payment_failed"){
+            let message = messageData.message;
+            document.getElementById('woomendo_modal_content_container').innerHTML = '<p id="woomendo_modal_content">'+message+'</p>'
+            refresh_iframe();
+        } 
+        else if (messageType === "payment_success") {
+            /* 
+                burada başarılıya yönlendireceğiz
+            */
+        }
+    },
+    false
+);
 
-    // var refresh_iframe = () => {
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     iframe.parentElement.removeChild(iframe);
-    //     let newIframe = document.createElement('iframe');
-    //     newIframe.style.display = "none";
-    //     newIframe.id = 'form-submit-iframe';
-    //     document.getElementById('iframe-container').appendChild(newIframe);
-    // }
-    // paymendo_form.addEventListener('submit', async function (ev)  {  
-    //     ev.preventDefault();
-    //     let formClone = this.cloneNode(true);
-    //     let iframe = document.getElementById('form-submit-iframe');
-    //     formClone.action = 'http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_make_payment';
-    //     formClone.method = "POST";
-    //     let docIframe = iframe.contentDocument || iframe.contentWindow.document;
-    //     docIframe.body.appendChild(formClone);
-    //     formClone.style.display = "none";
-    //     formClone.submit();
-
-    //     iframe.style.display = "block";
-    //     iframe.style.width = 500;
-    //     iframe.style.height = 500;
-    //     iframe.style.border = "0";
-    // });
+var refresh_iframe = () => {
+    let iframe = document.getElementById('paymendo-payment-iframe');
+    iframe.parentElement.removeChild(iframe);
+    let newIframe = document.createElement('iframe');
+    newIframe.style.display = "none";
+    newIframe.id = 'paymendo-payment-iframe';
+    document.getElementById('paymendo-payment-iframe-container').appendChild(newIframe);
+}
