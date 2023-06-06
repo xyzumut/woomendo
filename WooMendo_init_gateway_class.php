@@ -92,48 +92,45 @@
             }
 
             echo $this->creditCard->renderCreditCard();
-            
         }
         
-        public function payment_scripts() {
-
-        }
+        public function payment_scripts() {}
         
-        public function validate_fields(){
-
-        }
+        public function validate_fields(){}
         
         public function process_payment( $order_id ) {
-            
-            // wc_clear_notices();
-            global $woocommerce;
 
+            // global $woocommerce;
+            
             # sipariş bilgilerini aldık
             $order = wc_get_order( $order_id );  
             # sipariş bilgilerini aldık
 
             try{
 
-                $order->set_status('pending');
-                $order->reduce_order_stock();
-                $order->save();
+                if (empty(get_post_meta( $order_id, 'woomendo_paymendo_payment_control_token', true))) {
+                    $token = substr(uniqid(), 0, 16);
+                    $order->reduce_order_stock();
+                    update_post_meta( $order_id, 'woomendo_paymendo_payment_control_token', $token);
+                }
 
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                $order_comments = $_POST['order_comments'] ; # not
+                $my_comment = json_encode(["order_woocommerce_id" => $order_id, "unatuh_payment_control_token_for_paymendo_api" => get_post_meta( $order_id, "woomendo_paymendo_payment_control_token", true), "callback" => "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_payment_control"]);
                 $currenyCode = 'TRY' ;
                 $amount = $order->get_total(); # Total fiyatı verir 
-                $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $order_comments, 'currency_code' => $currenyCode));
+                $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $my_comment, 'currency_code' => $currenyCode));
                 $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                    
-                $order_token = $this->paymendoRequest->getOrderToken($order_api_id);
 
+                $order_token = $this->paymendoRequest->getOrderToken($order_api_id);//postmetada sakla bunu, ordser token yoksa stoktan düş yoksa
             }
             catch (Exception $error){
                 wc_add_notice($error->getMessage(), 'error' );
                 return ;
             }
+
             $base_url = $this->paymendoRequest->get_woomendo_base_api_url();
+
             # Base Urldeki düzeltmeler
             if (substr($base_url,strlen($base_url)-1,1) === '/') {
                 $base_url = substr($base_url,0,strlen($base_url)-1);
@@ -142,6 +139,7 @@
                 $base_url = 'http://'.$base_url;
             }
             # Base Urldeki düzeltmeler
+
             $ajax_ = [
                 'order_id_in_api' => $order_api_id ,
                 'target_url_with_token' => $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token"
@@ -152,7 +150,7 @@
                 $result['messages'] = /*html*/'<div id="woomendo_notice_container"> <div id="woomendo_first_notice">İşleminiz Devam Etmekte...</div> </div>';
                 return $result;  
             }, 10, 2);
-                
+
             return array(
                 'result' => 'success',
                 'ajax_datas' => $ajax_

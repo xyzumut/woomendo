@@ -284,7 +284,8 @@ jQuery(document)
     
     const order_id_in_api = xhr_datas.order_id_in_api;
     const target_url_with_token = xhr_datas.target_url_with_token;
-    const woomendo_spinner = '<div v-if="loading" class="spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
+    const woomendo_modal = '<div id="woomendo_modal"><div id="woomendo_modal_main_container"><div id="woomendo_modal_header"><div id="woomendo_modal_header_content">Bankanızdan Cevap Bekleniyor. . .</div><div id="woomendo_modal_header_close_button_container"><div id="woomendo_modal_header_close_button">X</div></div></div><div id="woomendo_modal_content_container"><div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div></div></div>'
+
     /* 
         kredi kartı numarasında boşluklar kaldırılacak
         TEST yazan yerde bir popup olacak 
@@ -314,6 +315,14 @@ jQuery(document)
         })
     }
 
+
+
+    document.getElementById('woomendo_first_notice').remove() // Mecburi aradaki kısa uyarıyı sildiö
+
+    document.getElementById('woomendo_notice_container').innerHTML = woomendo_modal // modalımı o container'ın içine ekledim
+
+    document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
+
     let response = await fetch(target_url_with_token, myOptions);
 
     response = await response.json()
@@ -329,22 +338,21 @@ jQuery(document)
 window.addEventListener(
     "message",
     (event) => {
-      let messageData = event.data;
-      let messageType = messageData.event;
-      if(messageType === "payment_failed")
-      {
-        let message = messageData.message;
-        alert(message)
-        
-
-
-
-        refresh_iframe();
-      } else if (messageType === "payment_success") {
-        message = message+'\nSiparişiniz oluşturuldu ve ödeme işlemi başarılı'
-
-        alert("Ödeme tamamlandı!");
-      }
+        document.getElementById('woomendo_modal_header_content').innerText = 'Bankanızdan cevap alındı.'
+        document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
+        document.getElementById('woomendo_modal_header_close_button').style.visibility='visible'
+        let messageData = event.data;
+        let messageType = messageData.event;
+        if(messageType === "payment_failed"){
+            let message = messageData.message;
+            document.getElementById('woomendo_modal_content_container').innerHTML = '<p id="woomendo_modal_content">'+message+'</p>'
+            refresh_iframe();
+        } 
+        else if (messageType === "payment_success") {
+            /* 
+                burada başarılıya yönlendireceğiz
+            */
+        }
     },
     false
 );
