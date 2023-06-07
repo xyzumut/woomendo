@@ -1,4 +1,3 @@
-
 /* Kendi Stillerim*/
 .mainContainerCard{
 }
@@ -381,7 +380,7 @@ input {
 
 /* Spinner Stilleri */
 .spinner {
-    width: 50px;
+    width: 60px;
     height: 60px;
     text-align: center;
     font-size: 10px;

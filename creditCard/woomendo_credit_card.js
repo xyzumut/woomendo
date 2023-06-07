@@ -322,7 +322,7 @@ jQuery(document)
 
     document.getElementById('woomendo_first_notice').remove() // Mecburi aradaki kısa uyarıyı sildiö
 
-    document.getElementById('woomendo_modal').style.display = 'flex' // modalımı o container'ın içine ekledim
+    document.getElementById('woomendo_modal').style.display = 'flex' 
 
     document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
 
@@ -332,40 +332,35 @@ jQuery(document)
 
     const form = response.data.attributes.form;
 
-    console.log(form)
-
     const iframe = document.getElementById('paymendo-payment-iframe')
 
-    console.log('iframe : ', iframe)
+    document.getElementById('woomendo-spinner').style.display = 'none'; // spinnerı sildim
 
-    // document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
-
-    // iframe.style.display = 'block'
+    iframe.style.display = 'block'
 
     iframe.srcdoc = form;
 
-    // document.getElementById('woomendo_modal_header_content').innerText = '3D Secure İşlemini Gerçekleştirin'
+    document.getElementById('woomendo_modal_header_content').innerText = '3D Secure İşlemini Gerçekleştirin'
 });
 
 window.addEventListener(
     "message",
     (event) => {
-        console.log('event : ', event)
+        document.getElementById('woomendo_modal').style.display = 'none' 
         document.getElementById('woomendo_modal_header_content').innerText = 'Bankanızdan cevap alındı.'
-        document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
-        document.getElementById('woomendo_modal_header_close_button').style.visibility='visible'
+        document.getElementById('woomendo-spinner').style.display = 'block'
         let messageData = event.data;
         let messageType = messageData.event;
         if(messageType === "payment_failed"){
             let message = messageData.message;
             document.getElementById('woomendo_modal_content_container').innerHTML = '<p id="woomendo_modal_content">'+message+'</p>'
+            document.getElementById('woomendo_modal_header_close_button').style.visibility='visible'
             refresh_iframe();
         } 
         else if (messageType === "payment_completed") {
             const redirect_url = document.getElementById('redirect_url').innerText;
-            location.href = redirect_url;
-            alert('Ödeme Başarılı')
             console.log('url : ', redirect_url)
+            location.href = redirect_url;
         }
     },
     false
@@ -377,5 +372,5 @@ var refresh_iframe = () => {
     let newIframe = document.createElement('iframe');
     newIframe.style.display = "none";
     newIframe.id = 'paymendo-payment-iframe';
-    document.getElementById('paymendo-payment-iframe-container').appendChild(newIframe);
+    document.getElementById('woomendo_modal_content_container').appendChild(newIframe);
 }
