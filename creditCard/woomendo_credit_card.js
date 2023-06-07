@@ -284,13 +284,18 @@ jQuery(document)
     
     const order_id_in_api = xhr_datas.order_id_in_api;
     const target_url_with_token = xhr_datas.target_url_with_token;
-    const woomendo_modal = '<div id="woomendo_modal"><div id="woomendo_modal_main_container"><div id="woomendo_modal_header"><div id="woomendo_modal_header_content">Bankanızdan Cevap Bekleniyor. . .</div><div id="woomendo_modal_header_close_button_container"><div id="woomendo_modal_header_close_button">X</div></div></div><div id="woomendo_modal_content_container"><div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div></div></div>'
+
+    document.getElementById('redirect_url').innerText = xhr_datas.redirect_url;
+
+    // const woomendo_modal = '<div id="woomendo_modal"><div id="woomendo_modal_main_container"><div id="woomendo_modal_header"><div id="woomendo_modal_header_content">Bankanızdan Cevap Bekleniyor. . .</div><div id="woomendo_modal_header_close_button_container"><div id="woomendo_modal_header_close_button">X</div></div></div><div id="woomendo_modal_content_container"><div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div></div></div></div>'
+    // const woomendo_modal = '<div id="woomendo_modal"><div id="woomendo_modal_main_container"><div id="woomendo_modal_header"><div id="woomendo_modal_header_content">Bankanızdan Cevap Bekleniyor. . .</div><div id="woomendo_modal_header_close_button_container"><div id="woomendo_modal_header_close_button">X</div></div></div><div id="woomendo_modal_content_container"><div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div><iframe id="paymendo-payment-iframe" style="display:none; width:400px; height:450px;" title="my_title"></iframe></div></div></div>'
 
     /* 
         kredi kartı numarasında boşluklar kaldırılacak
         TEST yazan yerde bir popup olacak 
         popup üzerinde loading yapılacak    
     */
+
     const woomendo_card_expDate = document.getElementById('expirationdate').value;
     const woomendo_card_holder = document.getElementById('holder_name').value;
     const woomendo_card_number = document.getElementById('cardnumber').value.replaceAll(' ', '');
@@ -315,11 +320,9 @@ jQuery(document)
         })
     }
 
-
-
     document.getElementById('woomendo_first_notice').remove() // Mecburi aradaki kısa uyarıyı sildiö
 
-    document.getElementById('woomendo_notice_container').innerHTML = woomendo_modal // modalımı o container'ın içine ekledim
+    document.getElementById('woomendo_modal').style.display = 'flex' // modalımı o container'ın içine ekledim
 
     document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
 
@@ -329,15 +332,25 @@ jQuery(document)
 
     const form = response.data.attributes.form;
 
+    console.log(form)
+
     const iframe = document.getElementById('paymendo-payment-iframe')
+
+    console.log('iframe : ', iframe)
+
+    // document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
+
+    // iframe.style.display = 'block'
 
     iframe.srcdoc = form;
 
+    // document.getElementById('woomendo_modal_header_content').innerText = '3D Secure İşlemini Gerçekleştirin'
 });
 
 window.addEventListener(
     "message",
     (event) => {
+        console.log('event : ', event)
         document.getElementById('woomendo_modal_header_content').innerText = 'Bankanızdan cevap alındı.'
         document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
         document.getElementById('woomendo_modal_header_close_button').style.visibility='visible'
@@ -348,10 +361,11 @@ window.addEventListener(
             document.getElementById('woomendo_modal_content_container').innerHTML = '<p id="woomendo_modal_content">'+message+'</p>'
             refresh_iframe();
         } 
-        else if (messageType === "payment_success") {
-            /* 
-                burada başarılıya yönlendireceğiz
-            */
+        else if (messageType === "payment_completed") {
+            const redirect_url = document.getElementById('redirect_url').innerText;
+            location.href = redirect_url;
+            alert('Ödeme Başarılı')
+            console.log('url : ', redirect_url)
         }
     },
     false

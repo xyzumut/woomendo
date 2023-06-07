@@ -3,8 +3,6 @@
 	Yapılacaklar:
 	* Kullanıcı ödeme sayfasında script yine yüklenmiyor ona bakılacak
 	* Fatih bey bana ödeme ile alakalı api tarafında yeni bir yapı hazırlayacak onu ordan sonra ilerleteceğim
-	06.06.2023 Son durum
-	* Bir action urli ile ödemenin alınıp alınmadığını kontrol edip ona göre aksiyon alan bir wordpress action oluşturdum
 */
 ?>
 <?php

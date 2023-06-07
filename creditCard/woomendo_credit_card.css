@@ -457,23 +457,23 @@ input {
     z-index: 1000;
 }
 #woomendo_modal_main_container{
-    width: 400px;
-    height: 150px;
+    width: 440px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     background-color: white;
     border-radius: 10px;
 }
 #woomendo_modal_header{
-    width: 400px;
+    width: 445px;
     height:50px;
     display: flex;
     flex-direction: row;
     border-bottom: 1px solid rgb(112, 112, 112);
 }
 #woomendo_modal_content_container{
-    width: 400px;
-    height: 100px;
+    width: 440px;
+    height: 500px;
 }
 #woomendo_modal_header_content{
     width: 350px;

@@ -137,8 +137,26 @@ class CreditCard{
                 <label for="securitycode">'.__('Security Code', 'Paymendo').'</label>
                 <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="3">
             </div>
-            <div id="paymendo-payment-iframe-container">
-                <iframe id="paymendo-payment-iframe" title="my_title" style="display:none;"></iframe>
+            <div id="redirect_url" style="display:none;"></div>
+            <div id="woomendo_modal" style="display:none;">
+                <div id="woomendo_modal_main_container">
+                    <div id="woomendo_modal_header">
+                        <div id="woomendo_modal_header_content">Bankanızdan Cevap Bekleniyor. . .</div>
+                        <div id="woomendo_modal_header_close_button_container">
+                            <div id="woomendo_modal_header_close_button">X</div>
+                        </div>
+                    </div>
+                    <div id="woomendo_modal_content_container">
+                        <div v-if="loading" class="spinner" id="woomendo-spinner">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+                        <iframe id="paymendo-payment-iframe" style="display:none; width:400px; height:450px;" title="my_title"></iframe>
+                    </div>
+                </div>
             </div>
         </div>';
         return $return;        

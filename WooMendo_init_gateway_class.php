@@ -142,7 +142,8 @@
 
             $ajax_ = [
                 'order_id_in_api' => $order_api_id ,
-                'target_url_with_token' => $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token"
+                'target_url_with_token' => $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token",
+                'redirect_url' => $this->get_return_url( $order )
             ];
 
             add_filter('woocommerce_payment_successful_result', function ($result, $order_id){
