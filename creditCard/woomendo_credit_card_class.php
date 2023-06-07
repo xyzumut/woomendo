@@ -8,17 +8,7 @@ class CreditCard{
     public function getPaymendoUtilities(){ return $this->paymendoUtilities; }
     public function setPaymendoUtilities($paymendoUtilities){ $this->paymendoUtilities = $paymendoUtilities; }
     
-    public function creditCardInitilization(){
-        wp_enqueue_script( 'woomendo_page_admin_script', plugin_dir_url( __FILE__ ).'woomendo_credit_card.js', array(), '', true);
-        wp_enqueue_style( 'woomendo_page_admin_style', plugin_dir_url( __FILE__ ).'woomendo_credit_card.css');
-    }
-    
     public function renderCreditCard(){
-
-        $this->creditCardInitilization();
-
-        // $order_balance = $response['data']['attributes']['balance'];
-        $order_balance = 300;
         $return='
         <div id="mainContainerCard">
             <div class="container preload">
@@ -147,14 +137,7 @@ class CreditCard{
                         </div>
                     </div>
                     <div id="woomendo_modal_content_container">
-                        <div v-if="loading" class="spinner" id="woomendo-spinner">
-                            <div class="rect1"></div>
-                            <div class="rect2"></div>
-                            <div class="rect3"></div>
-                            <div class="rect4"></div>
-                            <div class="rect5"></div>
-                        </div>
-                        <!--<iframe id="paymendo-payment-iframe" style="display:none; width:400px; height:450px;" title="my_title"></iframe>-->
+
                     </div>
                 </div>
             </div>
@@ -162,5 +145,4 @@ class CreditCard{
         return $return;        
     }
 }
-
 ?>

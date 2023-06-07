@@ -92,15 +92,19 @@
             }
 
             echo $this->creditCard->renderCreditCard();
+            
         }
         
-        public function payment_scripts() {}
+        public function payment_scripts() {
+            wp_enqueue_script( 'woomendo_page_admin_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.js', array(), '', true);
+            wp_enqueue_style( 'woomendo_page_admin_style', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.css');
+        }
         
         public function validate_fields(){}
         
         public function process_payment( $order_id ) {
 
-            // global $woocommerce;
+            global $woocommerce;
             
             # sipariş bilgilerini aldık
             $order = wc_get_order( $order_id );  

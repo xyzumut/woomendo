@@ -1,8 +1,23 @@
 <?php
 /*
+
 	Yapılacaklar:
-	* Kullanıcı ödeme sayfasında script yine yüklenmiyor ona bakılacak
-	* Fatih bey bana ödeme ile alakalı api tarafında yeni bir yapı hazırlayacak onu ordan sonra ilerleteceğim
+	* Kullanıcı özel ödeme sayfası ağır hasarlı onu düzeltmek gerek
+	* Filezilla ile alakalı işlemler kaldı, bunu garanti yapmam gerek
+
+	Son Durum:
+	* Sipariş oluşturma ve ödeme alma ile alakalı problem kalmadı sadece problem alındıktan sonra bunu api tarafında teyit edip woocommerce üzerinde statu değiştirilecek
+
+	FileZilla ile Alakalı Bilgi
+	*Host  : 51.255.51.108
+	*User  : tahsilat_merkezi_hook_user
+	*Pass  : 4hDiP6uXTuTp925p
+
+	Test Kartı
+	*Kart no  : 4155650100416111
+	*Vade     : 01/25
+	*CVV      : 123
+
 */
 ?>
 <?php

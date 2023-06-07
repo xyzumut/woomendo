@@ -442,7 +442,7 @@ input {
   }
 /* Spinner Stilleri */
 
-/* Popup Stilleri */
+/* Modal Stilleri */
 #woomendo_modal{
     width: 100vw;
     height: 100vh;
@@ -457,7 +457,7 @@ input {
 }
 #woomendo_modal_main_container{
     width: 440px;
-    height: 550px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -469,10 +469,11 @@ input {
     display: flex;
     flex-direction: row;
     border-bottom: 1px solid rgb(112, 112, 112);
+    margin-bottom: 10px;
 }
 #woomendo_modal_content_container{
     width: 440px;
-    min-height: 500px;
+    min-height: 150px;
 }
 #woomendo_modal_header_content{
     width: 350px;
@@ -510,4 +511,4 @@ input {
 #woomendo_modal_content{
     font-size: 16px;
 }
-/* Popup Stilleri */
+/* Modal Stilleri */

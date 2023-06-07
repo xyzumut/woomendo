@@ -16,13 +16,6 @@ add_filter( 'woocommerce_payment_gateways', function ( $gateways ){
 	return $gateways;
 });
 
-add_action('wp_ajax_paymendo_make_payment', 'make_payment_action');
-add_action('wp_ajax_nopriv_paymendo_make_payment', 'make_payment_action');
-
-function make_payment_function(){
-	die('x1');
-}
-
 add_action('wp_ajax_paymendo_payment_control'		, 'make_payment_control_action' );
 add_action('wp_ajax_nopriv_paymendo_payment_control', 'make_payment_control_action' );
 
