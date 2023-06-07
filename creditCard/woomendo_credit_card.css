@@ -464,7 +464,7 @@ input {
     border-radius: 10px;
 }
 #woomendo_modal_header{
-    width: 445px;
+    width: 440px;
     height:50px;
     display: flex;
     flex-direction: row;
@@ -472,7 +472,7 @@ input {
 }
 #woomendo_modal_content_container{
     width: 440px;
-    height: 500px;
+    min-height: 500px;
 }
 #woomendo_modal_header_content{
     width: 350px;

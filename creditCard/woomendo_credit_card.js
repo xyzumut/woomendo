@@ -296,6 +296,8 @@ jQuery(document)
         popup üzerinde loading yapılacak    
     */
 
+    alert('ajax completed')
+
     const woomendo_card_expDate = document.getElementById('expirationdate').value;
     const woomendo_card_holder = document.getElementById('holder_name').value;
     const woomendo_card_number = document.getElementById('cardnumber').value.replaceAll(' ', '');
@@ -334,6 +336,8 @@ jQuery(document)
 
     const iframe = document.getElementById('paymendo-payment-iframe')
 
+    console.log(iframe)
+
     document.getElementById('woomendo-spinner').style.display = 'none'; // spinnerı sildim
 
     iframe.style.display = 'block'
@@ -346,7 +350,6 @@ jQuery(document)
 window.addEventListener(
     "message",
     (event) => {
-        document.getElementById('woomendo_modal').style.display = 'none' 
         document.getElementById('woomendo_modal_header_content').innerText = 'Bankanızdan cevap alındı.'
         document.getElementById('woomendo-spinner').style.display = 'block'
         let messageData = event.data;
@@ -359,18 +362,25 @@ window.addEventListener(
         } 
         else if (messageType === "payment_completed") {
             const redirect_url = document.getElementById('redirect_url').innerText;
-            console.log('url : ', redirect_url)
+            document.getElementById('paymendo-payment-iframe').style.display = 'none'
             location.href = redirect_url;
         }
     },
     false
 );
 
-var refresh_iframe = () => {
-    let iframe = document.getElementById('paymendo-payment-iframe');
-    iframe.parentElement.removeChild(iframe);
-    let newIframe = document.createElement('iframe');
-    newIframe.style.display = "none";
-    newIframe.id = 'paymendo-payment-iframe';
-    document.getElementById('woomendo_modal_content_container').appendChild(newIframe);
+const refresh_iframe = () => {
+    const iframe = document.getElementById('paymendo-payment-iframe')
+    iframe.srcdoc = '';
 }
+
+// var refresh_iframe = () => {
+//     let iframe = document.getElementById('paymendo-payment-iframe');
+//     iframe.parentElement.removeChild(iframe);
+//     let newIframe = document.createElement('iframe');
+//     newIframe.style.display = "none";
+//     newIframe.id = 'paymendo-payment-iframe';
+//     newIframe.width = 400;
+//     newIframe.height = 450;
+//     document.getElementById('woomendo_modal_content_container').appendChild(newIframe);
+// }

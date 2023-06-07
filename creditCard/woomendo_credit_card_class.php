@@ -154,7 +154,7 @@ class CreditCard{
                             <div class="rect4"></div>
                             <div class="rect5"></div>
                         </div>
-                        <iframe id="paymendo-payment-iframe" style="display:none; width:400px; height:450px;" title="my_title"></iframe>
+                        <!--<iframe id="paymendo-payment-iframe" style="display:none; width:400px; height:450px;" title="my_title"></iframe>-->
                     </div>
                 </div>
             </div>
