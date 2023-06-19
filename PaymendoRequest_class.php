@@ -143,8 +143,6 @@
 
             $base_url = $this->woomendo_base_api_url;
 
-
-
             # Base Urldeki düzeltmeler
             if (substr($base_url,strlen($base_url)-1,1) === '/') {
                 $base_url = substr($base_url,0,strlen($base_url)-1);
@@ -164,11 +162,10 @@
             }
             
             # İstek login isteği değilse tokeni ekle
-            if (!$isThisLoginRequest && substr($endd,0,14) !== '/payment/make/' ) {
+            if (!$isThisLoginRequest) {
                 $headers['Authorization'] = 'Bearer '.$this->getWoomendoAccessToken($refresh);
             }
             # İstek login isteği değilse tokeni ekle
-
 
 
             # Request Optionsı ayarladık

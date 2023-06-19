@@ -1,4 +1,5 @@
 <?php
+
     class WC_WooMendo_Gateway extends WC_Payment_Gateway {
 
         private CreditCard $creditCard;
@@ -96,8 +97,9 @@
         }
         
         public function payment_scripts() {
-            wp_enqueue_script( 'woomendo_page_admin_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.js', array(), '', true);
-            wp_enqueue_style( 'woomendo_page_admin_style', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.css');
+            wp_enqueue_script( 'woomendo_payment_credit_card_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.js', array(), '', true);
+            wp_enqueue_script( 'woomendo_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo.js', array(), '', true);
+            wp_enqueue_style( 'woomendo_style', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.css');
         }
         
         public function validate_fields(){}
@@ -112,11 +114,13 @@
 
             try{
 
+                # Benim oluşturduğum token
                 if (empty(get_post_meta( $order_id, 'woomendo_paymendo_payment_control_token', true))) {
                     $token = substr(uniqid(), 0, 16);
                     $order->reduce_order_stock();
                     update_post_meta( $order_id, 'woomendo_paymendo_payment_control_token', $token);
                 }
+                # Benim oluşturduğum token
 
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
                 $my_comment = json_encode(["order_woocommerce_id" => $order_id, "unatuh_payment_control_token_for_paymendo_api" => get_post_meta( $order_id, "woomendo_paymendo_payment_control_token", true), "callback" => "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_payment_control"]);
@@ -126,7 +130,7 @@
                 $order_api_id = $create_order_response['data']['id']; # Siparişin api tarafındaki id'si
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
 
-                $order_token = $this->paymendoRequest->getOrderToken($order_api_id);//postmetada sakla bunu, ordser token yoksa stoktan düş yoksa
+                $order_token = $this->paymendoRequest->getOrderToken($order_api_id);
             }
             catch (Exception $error){
                 wc_add_notice($error->getMessage(), 'error' );
@@ -144,22 +148,39 @@
             }
             # Base Urldeki düzeltmeler
 
-            $ajax_ = [
-                'order_id_in_api' => $order_api_id ,
-                'target_url_with_token' => $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token",
-                'redirect_url' => $this->get_return_url( $order )
-            ];
+            $redirect_url = $this->get_return_url( $order );
+            $target_url_with_token = $base_url.PaymendoRequest::woomendo_unAuth_payment_api_url."/$order_token";
 
-            add_filter('woocommerce_payment_successful_result', function ($result, $order_id){
-                $result['result'] = 'failure';
-                $result['messages'] = /*html*/'<div id="woomendo_notice_container"> <div id="woomendo_first_notice">İşleminiz Devam Etmekte...</div> </div>';
-                return $result;  
-            }, 10, 2);
+            if (empty(get_post_meta( $order_id, 'woomendo_paymendo_payment_redirect_url', true))) {
+                $token = substr(uniqid(), 0, 16);
+                $order->reduce_order_stock();
+                update_post_meta( $order_id, 'woomendo_paymendo_payment_redirect_url', $redirect_url);
+                update_post_meta( $order_id, 'woomendo_paymendo_payment_token_in_api', $order_token);
+                update_post_meta( $order_id, 'woomendo_paymendo_payment_target_url_with_token', $target_url_with_token);
+                update_post_meta( $order_id, 'woomendo_paymendo_payment_order_id_in_api', $order_api_id);
+            }
 
-            return array(
-                'result' => 'success',
-                'ajax_datas' => $ajax_
-            );
+            $return = array('result' => 'success');
+
+            if (isset($_GET['pay_for_order'], $_GET['key'])) {
+                $return['redirect'] = "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_personel_payment_page&redirect_url=$redirect_url&target_url_with_token=$target_url_with_token&order_id_in_api=$order_api_id&order_id_in_woocommerce=$order_id";
+            }
+            else{
+                $ajax_ = [
+                    'order_id_in_api' => $order_api_id ,
+                    'target_url_with_token' => $target_url_with_token ,
+                    'redirect_url' => $redirect_url
+                ];
+
+                $return['ajax_datas'] = $ajax_;    
+            
+                add_filter('woocommerce_payment_successful_result', function ($result, $order_id){
+                    $result['messages'] = '<div id="woomendo_notice_container"> <div id="woomendo_first_notice">İşleminiz Devam Etmekte...</div> </div>';
+                    return $result;  
+                }, 10, 2);
+            }
+
+            return $return;
         }
     }
 ?>
