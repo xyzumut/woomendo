@@ -97,8 +97,10 @@
         }
         
         public function payment_scripts() {
-            wp_enqueue_script( 'woomendo_payment_credit_card_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.js', array(), '', true);
             wp_enqueue_script( 'woomendo_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo.js', array(), '', true);
+            wp_localize_script( 'woomendo_script', 'woomendo_script', ['admin_url' => get_admin_url()] );
+
+            wp_enqueue_script( 'woomendo_payment_credit_card_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.js', array(), '', true);
             wp_enqueue_style( 'woomendo_style', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.css');
         }
         

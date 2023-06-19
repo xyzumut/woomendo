@@ -21,8 +21,6 @@ add_action('wp_ajax_nopriv_paymendo_payment_control', 'make_payment_control_acti
 
 function make_payment_control_action(){
 	
-	update_option( 'make_payment_control', 'true' );
-
 	# Token api tarafındaki token değil process payment içerisinde oluşturup meta options'lara kaydettiğim şahsi tokenim olmalı
 	# Order ID'de api tarafındaki id değil wordpress tarafındaki id
 	if (!isset($_POST['token'], $_POST['order_id'], $_POST['is_it_paid'] )) {
@@ -73,7 +71,19 @@ add_action('wp_ajax_paymendo_session'		, 'paymendo_session_return' );
 add_action('wp_ajax_nopriv_paymendo_session', 'paymendo_session_return' );
 
 function paymendo_session_return(){
-	
+	function _return($data = null){
+		if ($data === null) {
+			wp_send_json([ 
+				'status' => false,
+				'data' => null
+			]);
+		}
+		wp_send_json([ 
+			'status' => true,
+			'data' => $data
+		]);
+	}
+
 	if (isset($_GET['operation'], $_GET['order_id']) && !empty(get_post_meta( $_GET['order_id'], 'woomendo_paymendo_payment_redirect_url', true))){
 		
 		if ($_GET['operation'] === 'get_id_and_token' && !empty(get_post_meta($_GET['order_id'],'woomendo_paymendo_payment_redirect_url', true)) && !empty(get_post_meta($_GET['order_id'],'woomendo_paymendo_payment_token_in_api', true))) {
@@ -92,21 +102,15 @@ function paymendo_session_return(){
 			_return($data);
 		}
 	}
-
 	_return();
 }
 
-function _return($data = null){
-	
-	if ($data === null) {
-		wp_send_json([ 
-			'status' => false,
-			'data' => null
-		]);
-	}
+add_action('wp_ajax_deneme'		  , 'deneme' );
+add_action('wp_ajax_nopriv_deneme', 'deneme' );
 
-	wp_send_json([ 
-		'status' => true,
-		'data' => $data
+function deneme(){
+
+	wp_send_json( [
+		'get_admin_url' => get_admin_url()//http://localhost/wp/wp-admin/
 	]);
 }
