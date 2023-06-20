@@ -21,31 +21,24 @@ add_action('wp_ajax_nopriv_paymendo_payment_control', 'make_payment_control_acti
 
 function make_payment_control_action(){
 	
-	if (empty(get_option('sayac'))) {
-		update_option('sayac', 0 );
-	}
-	else{
-		$sayac = (int)get_option('sayac');
-		update_option('sayac', $sayac+1);
-	}
-	
+    $post = json_decode(file_get_contents('php://input'), true);
+
 	# Token api tarafındaki token değil process payment içerisinde oluşturup meta options'lara kaydettiğim şahsi tokenim olmalı
 	# Order ID'de api tarafındaki id değil wordpress tarafındaki id
-	if (!isset($_POST['token'], $_POST['order_id'], $_POST['is_it_paid'] )) {
+	if (!isset($post['token'], $post['order_id'], $post['paid'] )) {
+
 		wp_send_json( [
 			'status' => false,
-			'message' => "Must be 'is_it_paid', 'token' and 'order_id'!",
+			'message' => "Must be 'paid', 'token' and 'order_id'!",
 			'info' => null
 		]);
 	}
 
-	if ($_POST['token'] === get_post_meta( $_POST['order_id'], 'woomendo_paymendo_payment_control_token', true )) {
-		# token doğru ve ilgili postmeta kaydı bulunuyor demektir
-
-		$order = wc_get_order( (int)$_POST['order_id'] );  
-
-		if (json_decode($_POST['paid']) === true) {
-
+	if ($post['token'] === get_post_meta( $post['order_id'], 'woomendo_paymendo_payment_control_token', true )) {
+        # token doğru ve ilgili postmeta kaydı bulunuyor demektir
+		
+        if (json_decode($post['paid']) === 1) {
+            $order = wc_get_order( (int)$post['order_id'] );  
 			$order->set_status('processing');
 			$order->save();
 
@@ -53,13 +46,12 @@ function make_payment_control_action(){
 				'status' => true,
 				'message' => 'Order Payment Confirmed',
 				'info' => [
-					'order_id' => $_POST['order_id'],
+					'order_id' => $post['order_id'],
 					'order_status' => $order->get_status()
 				],
 			]);
 		}
-
-		else if(json_decode($_POST['paid']) === false){
+		else{
 			wp_send_json( [
 				'status' => false,
 				'message' => 'Order Payment Not Confirmed',
@@ -67,7 +59,6 @@ function make_payment_control_action(){
 			]);
 		}
 	}
-
 	wp_send_json( [
 		'status' => false,
 		'message' => 'Something went wrong',
@@ -111,14 +102,4 @@ function paymendo_session_return(){
 		}
 	}
 	_return();
-}
-
-add_action('wp_ajax_deneme'		  , 'deneme' );
-add_action('wp_ajax_nopriv_deneme', 'deneme' );
-
-function deneme(){
-
-	wp_send_json( [
-		'get_admin_url' => get_admin_url()//http://localhost/wp/wp-admin/
-	]);
 }

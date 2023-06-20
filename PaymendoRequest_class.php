@@ -1,7 +1,4 @@
 <?php
-/* 
-    yeni requesti ekledim ve sipariş oluşturabiliyorum, login olup olamamayı denemedim henüz
-*/
     class PaymendoRequest{
 
         private $woomendo_access_token;

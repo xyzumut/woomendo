@@ -125,7 +125,8 @@
                 # Benim oluşturduğum token
 
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
-                $my_comment = json_encode(["order_woocommerce_id" => $order_id, "unatuh_payment_control_token_for_paymendo_api" => get_post_meta( $order_id, "woomendo_paymendo_payment_control_token", true), "callback" => "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_payment_control"]);
+                $callback_admin = get_admin_url();//http://localhost/wp/wp-admin/;
+                $my_comment = json_encode(["order_woocommerce_id" => $order_id, "unatuh_payment_control_token_for_paymendo_api" => get_post_meta( $order_id, "woomendo_paymendo_payment_control_token", true), "callback" => $callback_admin.'admin-ajax.php?action=paymendo_payment_control']);
                 $currenyCode = 'TRY' ;
                 $amount = $order->get_total(); # Total fiyatı verir 
                 $create_order_response = $this->paymendoRequest->createOrder(array('amount' => $amount, 'notes' => $my_comment, 'currency_code' => $currenyCode));
@@ -133,6 +134,7 @@
                 #  Burada api tarafında siparişi oluşturup akabinde wordpress tarafında oluşan siparişin durumu 'beklemede' moduna alır ve stoktan düşer
 
                 $order_token = $this->paymendoRequest->getOrderToken($order_api_id);
+                
             }
             catch (Exception $error){
                 wc_add_notice($error->getMessage(), 'error' );
@@ -146,7 +148,7 @@
                 $base_url = substr($base_url,0,strlen($base_url)-1);
             }
             if (substr($base_url,0,4) !== 'http') {
-                $base_url = 'http://'.$base_url;
+                $base_url = 'https://'.$base_url;
             }
             # Base Urldeki düzeltmeler
 
@@ -164,23 +166,18 @@
 
             $return = array('result' => 'success');
 
-            if (isset($_GET['pay_for_order'], $_GET['key'])) {
-                $return['redirect'] = "http://localhost/wp/wp-admin/admin-ajax.php?action=paymendo_personel_payment_page&redirect_url=$redirect_url&target_url_with_token=$target_url_with_token&order_id_in_api=$order_api_id&order_id_in_woocommerce=$order_id";
-            }
-            else{
-                $ajax_ = [
-                    'order_id_in_api' => $order_api_id ,
-                    'target_url_with_token' => $target_url_with_token ,
-                    'redirect_url' => $redirect_url
-                ];
+            $ajax_ = [
+                'order_id_in_api' => $order_api_id ,
+                'target_url_with_token' => $target_url_with_token ,
+                'redirect_url' => $redirect_url
+            ];
 
-                $return['ajax_datas'] = $ajax_;    
-            
-                add_filter('woocommerce_payment_successful_result', function ($result, $order_id){
-                    $result['messages'] = '<div id="woomendo_notice_container"> <div id="woomendo_first_notice">İşleminiz Devam Etmekte...</div> </div>';
-                    return $result;  
-                }, 10, 2);
-            }
+            $return['ajax_datas'] = $ajax_;    
+        
+            add_filter('woocommerce_payment_successful_result', function ($result, $order_id){
+                $result['messages'] = '<div id="woomendo_notice_container"> <div id="woomendo_first_notice">İşleminiz Devam Etmekte...</div> </div>';
+                return $result;  
+            }, 10, 2);
 
             return $return;
         }
