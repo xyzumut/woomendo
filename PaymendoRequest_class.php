@@ -148,7 +148,7 @@
                 $base_url = substr($base_url,0,strlen($base_url)-1);
             }
             if (substr($base_url,0,4) !== 'http') {
-                $base_url = 'http://'.$base_url;
+                $base_url = 'https://'.$base_url;
             }
             # Base Urldeki düzeltmeler
 
