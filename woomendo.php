@@ -21,6 +21,14 @@ add_action('wp_ajax_nopriv_paymendo_payment_control', 'make_payment_control_acti
 
 function make_payment_control_action(){
 	
+	if (empty(get_option('sayac'))) {
+		update_option('sayac', 0 );
+	}
+	else{
+		$sayac = (int)get_option('sayac');
+		update_option('sayac', $sayac+1);
+	}
+	
 	# Token api tarafındaki token değil process payment içerisinde oluşturup meta options'lara kaydettiğim şahsi tokenim olmalı
 	# Order ID'de api tarafındaki id değil wordpress tarafındaki id
 	if (!isset($_POST['token'], $_POST['order_id'], $_POST['is_it_paid'] )) {
