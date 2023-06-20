@@ -18,13 +18,18 @@ jQuery(document).on('ready updated_checkout', function (param) {
                 
                 // Order id'yi linkten aldım
                 const url_params = window.location.href.split('/')
-                const order_id = url_params.filter(item => !isNaN(Number(item)) && (Number(item) !== 0) )
+                console.log(url_params)
+                let order_id = url_params.filter(item => !isNaN(Number(item)) && (Number(item) !== 0) )
+
+
+                if (typeof order_id === 'object' && order_id.length === 0) {
+                    order_id = url_params.filter( item => item.includes('order-pay='))[0].split('&').filter(item => item.includes('order-pay'))[0].split('=')[1]
+                }
                 // Order id'yi linkten aldım
-
+                
                 // order id dışındaki verileri aldık
-
                 let response = await fetch(woomendo_script.admin_url+'admin-ajax.php?action=paymendo_session&operation=get_id_and_token&order_id=' + order_id)
-                // woomendo_script.admin_url = http://localhost/wp/wp-admin/
+
                 response = await response.json()
 
                 if (response.status === false) {
