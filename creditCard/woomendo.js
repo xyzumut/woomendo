@@ -172,7 +172,7 @@ jQuery(document)
 window.addEventListener(
     "message",
     (event) => {
-        document.getElementById('woomendo_modal_header_content').innerText = 'Bankanızdan cevap alındı.'
+        document.getElementById('woomendo_modal_header_content').innerText = woomendo_script.response_has_been_received_message
         let messageData = event.data;
         let messageType = messageData.event;
         if(messageType === "payment_failed"){
