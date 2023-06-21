@@ -4,6 +4,8 @@ Plugin Name: WooMendo
 Description: Extends WooCommerce with an WooMendo gateway.
 Version: 1.0
 Author: Umut
+Text Domain: WooMendo
+Domain Path: /lang
 */
 require (__DIR__).'/creditCard//woomendo_credit_card_class.php';
 require (__DIR__).'/PaymendoRequest_class.php';

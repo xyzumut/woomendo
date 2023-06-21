@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Paymendo\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.1\n"
+
+msgid "Name Surname"
+msgstr "Ad Soyad"
+
+msgid "Base URL for API"
+msgstr "API için BASE URL"
+
+msgid "BASE API URL"
+msgstr "API için BASE URL"
+
+msgid "Password for Login"
+msgstr "Şifre"
+
+msgid "Login password"
+msgstr "Şifre"
+
+msgid "E-mail for Login"
+msgstr "Mail Adresi"
+
+msgid "Login e-mail"
+msgstr "Mail Adresi"
+
+msgid "Make your payment quickly and reliably on paymendo."
+msgstr "Ödemenizi paymendo üzerinden hızlı ve güvenilir bir şekilde yapın."
+
+msgid "This controls the description which the user sees during checkout."
+msgstr "Bu, kullanıcının ödeme sırasında gördüğü açıklamayı kontrol eder."
+
+msgid "Description"
+msgstr "Açıklama"
+
+msgid "Make payments via Woomendo."
+msgstr "Woomendo ile ödeme yapın."
+
+msgid "Enable / Disable"
+msgstr "Aktif / Pasif"
+
+msgid "Enable WooMendo Gateway"
+msgstr "WooMendo Ödeme Yöntemini Etkinleştir"
+
+msgid "Title"
+msgstr "Başlık"
+
+msgid "This controls the title which the user sees during checkout."
+msgstr "Bu, kullanıcının ödeme sırasında gördüğü başlığı kontrol eder."
+
+msgid "There was a problem, try again later(3)."
+msgstr "Bir sorun oluştu, daha sonra tekrar deneyin(3)."
+
+msgid "Missing information sent."
+msgstr "Eksik bilgi gönderildi."
+
+msgid "Wrong password."
+msgstr "Yanlış Şifre."
+
+msgid "The password was sent blank."
+msgstr "Şifre boş gönderildi."
+
+msgid "There was a problem, try again later.(1)"
+msgstr "Bir sorun oluştu, daha sonra tekrar deneyin(1)."
+
+msgid "Unable to verify"
+msgstr "Doğrulanamadı"
+
+msgid "An error occurred, base api url may be wrong!"
+msgstr "Bir hata oluştu, Base API URL yanlış olabilir!"
+
+msgid "Expiry Date"
+msgstr "Son Kullanma Tarihi"
+
+msgid "Card Number"
+msgstr "Kart Numarası"
+
+msgid "Security Code"
+msgstr "Güvenlik Kodu"
+
+msgid "Name"
+msgstr "İsim"
+
+msgid "Expiry Date (Month/Year)"
+msgstr "Son Kullanma Tarihi (Ay / Yıl)"

@@ -28,10 +28,10 @@ class CreditCard{
                                     <path class="darkcolor greydark" d="M750,431V193.2c-217.6-57.5-556.4-13.5-750,24.9V431c0,22.1,17.9,40,40,40h670C732.1,471,750,453.1,750,431z" />
                                 </g>
                                 <text transform="matrix(1 0 0 1 60.106 295.0121)" id="svgnumber" class="st2 st3 st4">0123 4567 8910 1112</text>
-                                <text transform="matrix(1 0 0 1 54.1064 428.1723)" id="svgname" class="st2 st5 st6">'.__('Name Surname', '@1@').'</text>
-                                <text transform="matrix(1 0 0 1 54.1074 389.8793)" class="st7 st5 st8">'.__('Name Surname', '@1@').'</text>
-                                <text transform="matrix(1 0 0 1 479.7754 388.8793)" class="st7 st5 st8">'.__('Expiry Date', '@1@').'</text>
-                                <text transform="matrix(1 0 0 1 65.1054 241.5)" class="st7 st5 st8">'.__('Card Number', '@1@').'</text>
+                                <text transform="matrix(1 0 0 1 54.1064 428.1723)" id="svgname" class="st2 st5 st6">'.__('Name Surname', 'WooMendo').'</text>
+                                <text transform="matrix(1 0 0 1 54.1074 389.8793)" class="st7 st5 st8">'.__('Name Surname', 'WooMendo').'</text>
+                                <text transform="matrix(1 0 0 1 479.7754 388.8793)" class="st7 st5 st8">'.__('Expiry Date', 'WooMendo').'</text>
+                                <text transform="matrix(1 0 0 1 65.1054 241.5)" class="st7 st5 st8">'.__('Card Number', 'WooMendo').'</text>
                                 <g>
                                     <text transform="matrix(1 0 0 1 574.4219 433.8095)" id="svgexpire" class="st2 st5 st9">01/23</text>
                                     <text transform="matrix(1 0 0 1 479.3848 417.0097)" class="st2 st10 st11">VALID</text>
@@ -98,33 +98,33 @@ class CreditCard{
                                 </g>
                                 <text transform="matrix(1 0 0 1 621.999 227.2734)" id="svgsecurity" class="st6 st7">xxx</text>
                                 <g class="st8">
-                                    <text transform="matrix(1 0 0 1 518.083 280.0879)" class="st9 st6 st10">'.__('Security Code', '@1@').'</text>
+                                    <text transform="matrix(1 0 0 1 518.083 280.0879)" class="st9 st6 st10">'.__('Security Code', 'WooMendo').'</text>
                                 </g>
                                 <rect x="58.1" y="378.6" class="st11" width="375.5" height="13.5" />
                                 <rect x="58.1" y="405.6" class="st11" width="421.7" height="13.5" />
-                                <text transform="matrix(1 0 0 1 59.5073 228.6099)" id="svgnameback" class="st12 st13">'.__('Name Surname', '@1@').'</text>
+                                <text transform="matrix(1 0 0 1 59.5073 228.6099)" id="svgnameback" class="st12 st13">'.__('Name Surname', 'WooMendo').'</text>
                             </g>
                         </svg>
                     </div>
                 </div>
             </div>
             <div class="field-container">
-                <label for="holder_name">'.__('Name', '@1@').'</label>
+                <label for="holder_name">'.__('Name', 'WooMendo').'</label>
                 <input id="holder_name" maxlength="20" type="text">
             </div>
             <div class="field-container">
-                <label for="cardnumber">'.__('Card Number', '@1@').'</label>
+                <label for="cardnumber">'.__('Card Number', 'WooMendo').'</label>
                 <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric">
                 <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink">
                 </svg>
             </div>
             <div class="field-container">
-                <label for="expirationdate">'.__('Expiry Date (Month/Year)', '@1@').'</label>
+                <label for="expirationdate">'.__('Expiry Date (Month/Year)', 'WooMendo').'</label>
                 <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric">
             </div>
             <div class="field-container">
-                <label for="securitycode">'.__('Security Code', 'Paymendo').'</label>
+                <label for="securitycode">'.__('Security Code', 'WooMendo').'</label>
                 <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" maxlength="3">
             </div>
             <div id="redirect_url" style="display:none;"></div>

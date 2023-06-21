@@ -35,7 +35,7 @@
                     return $this->woomendo_access_token;
                 }
                 else{
-                    throw new Exception(__('There was a problem, try again later(3).', '@1@'));
+                    throw new Exception(__('There was a problem, try again later(3).', 'WooMendo'));
                 }
             }
             
@@ -191,7 +191,7 @@
                 if ($this->getWoomendoAccessToken($refresh) === '') 
                     return $this->requestWoomendo($endpoint_url, $data, true);
                 
-                throw new Exception(__('Missing information sent.', '@1@'));
+                throw new Exception(__('Missing information sent.', 'WooMendo'));
             }
 
             if (isset($response['error']) ) {
@@ -200,25 +200,25 @@
                     
                     # Auth yani şifre yanlış gönderilmiş
                     if ($response['error'] === 'invalid_grant') 
-                        throw new Exception(__('Wrong password.', '@1@'));
+                        throw new Exception(__('Wrong password.', 'WooMendo'));
                     # Auth yani şifre yanlış gönderilmiş
 
                     # Auth yani şifre içi boş gönderilmiş
                     if ($response['error'] === 'invalid_request') 
-                        throw new Exception(__('The password was sent blank.', '@1@'));
+                        throw new Exception(__('The password was sent blank.', 'WooMendo'));
                     
                     # Auth yani şifre içi boş gönderilmiş
-                    throw new Exception(__('There was a problem, try again later.(1)', '@1@'));
+                    throw new Exception(__('There was a problem, try again later.(1)', 'WooMendo'));
                 }
 
                 if ($refresh) 
-                    throw new Exception(__('Doğrulama sağlanamıyor', 'Paymendo'));
+                    throw new Exception(__('Unable to verify', 'WooMendo'));
                 
                 return $this->requestWoomendo($endpoint_url, $data, true);
                 
             }
             
-            throw new Exception(__('An error occurred, base api url may be wrong!', '@1@'));
+            throw new Exception(__('An error occurred, base api url may be wrong!', 'WooMendo'));
         }
     }
 ?>

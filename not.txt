@@ -1,2 +1,0 @@
-notify eventte order num ve order id'de gönderilecek. bunlar metaya kaydedilecek ve transactiona api tarafındaki id not edilecek
-türkçe ingilizce çeviri yapılacak

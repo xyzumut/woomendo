@@ -11,7 +11,7 @@
             $this->icon = ''; 
             $this->has_fields = true; 
             $this->method_title = 'WooMendo';
-            $this->method_description = __('Make payments via Woomendo.', '@1@'); 
+            $this->method_description = __('Make payments via Woomendo.', 'WooMendo'); 
         
             $this->creditCard = new CreditCard(); 
 
@@ -49,39 +49,39 @@
         public function init_form_fields(){
             $this->form_fields = array(
                 'enabled' => array(
-                    'title'       => __('Enable / Disable', '@1@'),
-                    'label'       => __('Enable WooMendo Gateway', '@1@'),
+                    'title'       => __('Enable / Disable', 'WooMendo'),
+                    'label'       => __('Enable WooMendo Gateway', 'WooMendo'),
                     'type'        => 'checkbox',
                     'description' => '',
                     'default'     => 'no'
                 ),
                 'title' => array(
-                    'title'       => __('Title', '@1@'),
+                    'title'       => __('Title', 'WooMendo'),
                     'type'        => 'text',
-                    'description' => __('This controls the title which the user sees during checkout.', '@1@'),
+                    'description' => __('This controls the title which the user sees during checkout.', 'WooMendo'),
                     'default'     => 'WooMendo',
                     'desc_tip'    => true,
                 ),
                 'description' => array(
-                    'title'       => __('Description', '@1@'),
+                    'title'       => __('Description', 'WooMendo'),
                     'type'        => 'textarea',
-                    'description' => __('This controls the description which the user sees during checkout.', '@1@'),
-                    'default'     => __('Make your payment quickly and reliably on paymendo.', '@1@'),
+                    'description' => __('This controls the description which the user sees during checkout.', 'WooMendo'),
+                    'default'     => __('Make your payment quickly and reliably on paymendo.', 'WooMendo'),
                 ),
                 'login_mail' => array(
-                    'title'       => __('Login e-mail', '@1@'),
+                    'title'       => __('Login e-mail', 'WooMendo'),
                     'type'        => 'text',
-                    'description' => __('E-mail for Login', '@1@'),
+                    'description' => __('E-mail for Login', 'WooMendo'),
                 ),
                 'login_password' => array(
-                    'title'       => __('Login password', '@1@'),
+                    'title'       => __('Login password', 'WooMendo'),
                     'type'        => 'text',
-                    'description' => __('Password for Login', '@1@'),
+                    'description' => __('Password for Login', 'WooMendo'),
                 ),
                 'base_api_url' => array(
-                    'title'       => __('BASE API URL', '@1@'),
+                    'title'       => __('BASE API URL', 'WooMendo'),
                     'type'        => 'text',
-                    'description' => __('Base URL for API', '@1@'),
+                    'description' => __('Base URL for API', 'WooMendo'),
                 ),
             );
         }
