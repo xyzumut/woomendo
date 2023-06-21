@@ -5,14 +5,14 @@ jQuery(document).on('ready updated_checkout', function (param) {
         get: (searchParams, prop) => searchParams.get(prop),
     });
 
-
-
     if (params.pay_for_order !== null && params.key !== null) {
-        // Müşterinin özel ödeme sayfasındayız
+        // Müşterinin özel ödeme sayfasındayız, bunu key ve pay_for_order parametreleri ile teyit ediyoruz
 
         document.getElementById('order_review').addEventListener('submit', async (e) => {
+            // order_review form'u kullanınıcın özel ödeme sayfasındaki ödeme yöntemlerinin bulunduğu form
 
             if(document.getElementById('payment_method_woomendo').checked === true){
+                // ödeme yöntemlerinden woomendo seçili iken submit edilip edilmediğini filtreledik
 
                 e.preventDefault()
                 
@@ -27,6 +27,8 @@ jQuery(document).on('ready updated_checkout', function (param) {
                 }
                 // Order id'yi linkten aldım
                 
+
+
                 // order id dışındaki verileri aldık
                 let response = await fetch(woomendo_script.admin_url+'admin-ajax.php?action=paymendo_session&operation=get_id_and_token&order_id=' + order_id)
 
@@ -48,6 +50,16 @@ jQuery(document).on('ready updated_checkout', function (param) {
                 const woomendo_card_securityCode = document.getElementById('securitycode').value;
                 // order id dışındaki verileri aldık
 
+
+                // İstek atmadan modalı açtım
+                document.getElementById('woomendo_modal').style.display = 'flex' 
+                document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
+                document.getElementById('woomendo_modal_content_container').innerHTML = '<div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
+                document.getElementById('woomendo_modal_header_close_button').style.visibility='hidden'
+                // İstek atmadan modalı açtım
+
+
+                // Ödeme isteğini attık
                 const myOptions = {
                     headers: {
                         'Content-Type': 'application/json'
@@ -66,14 +78,11 @@ jQuery(document).on('ready updated_checkout', function (param) {
                         }
                     })
                 }
-
-                document.getElementById('woomendo_modal').style.display = 'flex' 
-                document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
-                document.getElementById('woomendo_modal_content_container').innerHTML = '<div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
-                document.getElementById('woomendo_modal_header_close_button').style.visibility='hidden'
                 response = await fetch(target_url_with_token, myOptions);
                 response = await response.json()
+                // Ödeme isteğini attık
 
+                // formu modal'a basıp spinnerı kaldırdım ve mesajı güncelledim
                 const form = response.data.attributes.form;
 
                 const popup_container = document.getElementById('woomendo_modal_content_container');
@@ -85,11 +94,12 @@ jQuery(document).on('ready updated_checkout', function (param) {
                 iframe.id='paymendo-payment-iframe';
                 popup_container.appendChild(iframe);
 
-                document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
+                document.getElementById('woomendo-spinner').remove();
 
                 document.getElementById('woomendo_modal_header_content').innerText = woomendo_script._3d_secure_message
 
                 document.getElementById('redirect_url').innerText = redirect_url;
+                // formu modal'a basıp spinnerı kaldırdım ve mesajı güncelledim
             }
         })
         // Müşterinin özel ödeme sayfasındayız
@@ -113,6 +123,7 @@ jQuery(document)
     if (xhr_datas === null) 
         return false;
     
+    // Bilgileri aldım
     const order_id_in_api = xhr_datas.order_id_in_api;
     const target_url_with_token = xhr_datas.target_url_with_token;
 
@@ -122,7 +133,26 @@ jQuery(document)
     const woomendo_card_holder = document.getElementById('holder_name').value;
     const woomendo_card_number = document.getElementById('cardnumber').value.replaceAll(' ', '');
     const woomendo_card_securityCode = document.getElementById('securitycode').value;
+    // Bilgileri aldım
 
+
+
+    // Mecburi aradaki kısa uyarıyı sildim
+    document.getElementById('woomendo_first_notice').remove() 
+    // Mecburi aradaki kısa uyarıyı sildim
+
+    
+    
+    
+    // Modal ve spinnerı ekrana bastım
+    document.getElementById('woomendo_modal').style.display = 'flex' 
+    document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
+    document.getElementById('woomendo_modal_content_container').innerHTML = '<div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
+    document.getElementById('woomendo_modal_header_close_button').style.visibility='hidden'
+    // Modal ve spinnerı ekrana bastım
+
+
+    // ödeme isteği attım
     const myOptions = {
         headers: {
             'Content-Type': 'application/json'
@@ -141,18 +171,12 @@ jQuery(document)
             }
         })
     }
-
-
-    document.getElementById('woomendo_first_notice').remove() // Mecburi aradaki kısa uyarıyı sildim
-
-    document.getElementById('woomendo_modal').style.display = 'flex' 
-    document.getElementById('woomendo_modal_header_close_button').addEventListener('click', () => {document.getElementById('woomendo_modal').style.display='none'}) // modal kapatma eventim
-    document.getElementById('woomendo_modal_content_container').innerHTML = '<div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
-    document.getElementById('woomendo_modal_header_close_button').style.visibility='hidden'
     let response = await fetch(target_url_with_token, myOptions);
     response = await response.json()
+    // ödeme isteği attım
 
 
+    // Formu modala bastım, spinner'ı ekrandan kaldırıp yazıyı güncelledim
     const form = response.data.attributes.form;
 
     const popup_container = document.getElementById('woomendo_modal_content_container');
@@ -167,8 +191,10 @@ jQuery(document)
     document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
 
     document.getElementById('woomendo_modal_header_content').innerText = woomendo_script._3d_secure_message
+    // Formu modala bastım, spinner'ı ekrandan kaldırıp yazıyı güncelledim
 });
 
+// Bankadan gelen formun bana döndüğü mesajı dinleyip ona göre çıktı verdim
 window.addEventListener(
     "message",
     (event) => {
@@ -196,3 +222,4 @@ window.addEventListener(
     },
     false
 );
+// Bankadan gelen formun bana döndüğü mesajı dinleyip ona göre çıktı verdim

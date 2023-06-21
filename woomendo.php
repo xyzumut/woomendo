@@ -13,12 +13,14 @@ require (__DIR__).'/PaymendoRequest_class.php';
 require (__DIR__).'/WooMendo_init_gateway_class.php';
 
 
-// Bu hook sınıfımı bir WooCommerce ödeme yöntemi olarak kaydeder
+/* Bu hook sınıfımı bir WooCommerce ödeme yöntemi olarak kaydeder */
 add_filter( 'woocommerce_payment_gateways', function ( $gateways ){
 	$gateways[] = 'WC_WooMendo_Gateway'; // classımın ismi yazmalı burada 
 	return $gateways;
 });
 
+/* wp_ajax_paymendo_payment_control ile ödeme alındıktan sonra API'nin bana istek atıp API tarafında da ödemenin gerçekleştiğini
+teyit ediyorum ve woocommerce tarafında siparişin durumunu güncelliyorum */
 add_action('wp_ajax_paymendo_payment_control'		, 'make_payment_control_action' );
 add_action('wp_ajax_nopriv_paymendo_payment_control', 'make_payment_control_action' );
 function make_payment_control_action(){
@@ -65,6 +67,8 @@ function make_payment_control_action(){
 	]);
 }
 
+/* wp_ajax_paymendo_session ile php'den javaScript'e veri taşıyorum, bu kısım sadece müşterinin siparişi kendi
+özel sayfasında ödemeye çalıştığında devreye giriyor. */
 add_action('wp_ajax_paymendo_session'		, 'paymendo_session_return' );
 add_action('wp_ajax_nopriv_paymendo_session', 'paymendo_session_return' );
 function paymendo_session_return(){
@@ -99,14 +103,8 @@ function paymendo_session_return(){
 	_return();
 }
 
+/* Dil dosyasını entegre ediyorum */
 add_action( 'plugins_loaded', function (){
 	$plugin_dir = basename(dirname(__FILE__));
 	load_plugin_textdomain( 'WooMendo', false, $plugin_dir . '/lang' );
 });
-/* 
-	poedit veya msgfmt -o .\WooMendo-tr_TR.mo WooMendo-tr_TR.po iş görür
-	isimlendirmeler önemli : 
-	load_plugin_textdomain( 'WooMendo', false, $plugin_dir . '/lang' ) için 'WooMendo' yazan yer 
-	eklentinin adı olacak mutlaka, dosya İsimleride küçük harfli olacak şekilde eklentinin adı ile 
-	başlayıp dil kodu ile devam etmeli tıpkı 'WooMendo-tr_TR.mo' gibi
-*/
