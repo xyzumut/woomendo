@@ -1,7 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Paymendo\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
