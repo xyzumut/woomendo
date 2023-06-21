@@ -7,6 +7,7 @@ Author: Umut
 Text Domain: WooMendo
 Domain Path: /lang
 */
+/* msgfmt -o .\WooMendo-tr_TR.mo WooMendo-tr_TR.po */
 require (__DIR__).'/creditCard//woomendo_credit_card_class.php';
 require (__DIR__).'/PaymendoRequest_class.php';
 require (__DIR__).'/WooMendo_init_gateway_class.php';
@@ -110,3 +111,9 @@ function paymendo_session_return(){
 	}
 	_return();
 }
+
+add_action( 'plugins_loaded', function () {
+	$plugin_dir = basename(dirname(__FILE__));
+	// echo $plugin_dir . '/lang';
+	load_plugin_textdomain( 'Paymendo', false, $plugin_dir . '/lang' );
+} );
