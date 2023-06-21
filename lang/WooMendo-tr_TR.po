@@ -1,8 +1,11 @@
+# Copyright (C) 2023 WooMendo
+# This file is distributed under the same license as the WooMendo package.
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"Project-Id-Version: WooMendo 1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woomendo\n"
+"POT-Creation-Date: 2023-06-21 12:26:21+00:00\n"
+"PO-Revision-Date: 2023-06-21 15:36+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr_TR\n"
@@ -11,95 +14,142 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.3.1\n"
 
-msgid "Name Surname"
-msgstr "Ad Soyad"
-
-msgid "Base URL for API"
-msgstr "API için BASE URL"
-
-msgid "BASE API URL"
-msgstr "API için BASE URL"
-
-msgid "Password for Login"
-msgstr "Şifre"
-
-msgid "Login password"
-msgstr "Şifre"
-
-msgid "E-mail for Login"
-msgstr "Mail Adresi"
-
-msgid "Login e-mail"
-msgstr "Mail Adresi"
-
-msgid "Make your payment quickly and reliably on paymendo."
-msgstr "Ödemenizi paymendo üzerinden hızlı ve güvenilir bir şekilde yapın."
-
-msgid "This controls the description which the user sees during checkout."
-msgstr "Bu, kullanıcının ödeme sırasında gördüğü açıklamayı kontrol eder."
-
-msgid "Description"
-msgstr "Açıklama"
-
-msgid "Make payments via Woomendo."
-msgstr "Woomendo ile ödeme yapın."
-
-msgid "Enable / Disable"
-msgstr "Aktif / Pasif"
-
-msgid "Enable WooMendo Gateway"
-msgstr "WooMendo Ödeme Yöntemini Etkinleştir"
-
-msgid "Title"
-msgstr "Başlık"
-
-msgid "This controls the title which the user sees during checkout."
-msgstr "Bu, kullanıcının ödeme sırasında gördüğü başlığı kontrol eder."
-
+#: PaymendoRequest_class.php:38
 msgid "There was a problem, try again later(3)."
 msgstr "Bir sorun oluştu, daha sonra tekrar deneyin(3)."
 
+#: PaymendoRequest_class.php:194
 msgid "Missing information sent."
 msgstr "Eksik bilgi gönderildi."
 
+#: PaymendoRequest_class.php:203
 msgid "Wrong password."
 msgstr "Yanlış Şifre."
 
+#: PaymendoRequest_class.php:208
 msgid "The password was sent blank."
 msgstr "Şifre boş gönderildi."
 
+#: PaymendoRequest_class.php:211
 msgid "There was a problem, try again later.(1)"
 msgstr "Bir sorun oluştu, daha sonra tekrar deneyin(1)."
 
+#: PaymendoRequest_class.php:215
 msgid "Unable to verify"
 msgstr "Doğrulanamadı"
 
+#: PaymendoRequest_class.php:221
 msgid "An error occurred, base api url may be wrong!"
 msgstr "Bir hata oluştu, Base API URL yanlış olabilir!"
 
-msgid "Expiry Date"
-msgstr "Son Kullanma Tarihi"
+#: WooMendo_init_gateway_class.php:14
+msgid "Make payments via Woomendo."
+msgstr "Woomendo ile ödeme yapın."
 
-msgid "Card Number"
-msgstr "Kart Numarası"
+#: WooMendo_init_gateway_class.php:52
+msgid "Enable / Disable"
+msgstr "Aktif / Pasif"
 
-msgid "Security Code"
-msgstr "Güvenlik Kodu"
+#: WooMendo_init_gateway_class.php:53
+msgid "Enable WooMendo Gateway"
+msgstr "WooMendo Ödeme Yöntemini Etkinleştir"
 
-msgid "Name"
-msgstr "İsim"
+#: WooMendo_init_gateway_class.php:59
+msgid "Title"
+msgstr "Başlık"
 
-msgid "Expiry Date (Month/Year)"
-msgstr "Son Kullanma Tarihi (Ay / Yıl)"
+#: WooMendo_init_gateway_class.php:61
+msgid "This controls the title which the user sees during checkout."
+msgstr "Bu, kullanıcının ödeme sırasında gördüğü başlığı kontrol eder."
 
-msgid "Awaiting Response From Your Bank. . ."
-msgstr "Bankanızdan Cevap Bekleniyor. . ."
+#: WooMendo_init_gateway_class.php:66
+msgid "Description"
+msgstr "Açıklama"
 
+#: WooMendo_init_gateway_class.php:68
+msgid "This controls the description which the user sees during checkout."
+msgstr "Bu, kullanıcının ödeme sırasında gördüğü açıklamayı  kontrol eder."
+
+#: WooMendo_init_gateway_class.php:69
+msgid "Make your payment quickly and reliably on paymendo."
+msgstr "Ödemenizi paymendo üzerinden hızlı ve güvenilir bir şekilde yapın."
+
+#: WooMendo_init_gateway_class.php:72
+msgid "Login e-mail"
+msgstr "Mail Adresi"
+
+#: WooMendo_init_gateway_class.php:74
+msgid "E-mail for Login"
+msgstr "Mail Adresi"
+
+#: WooMendo_init_gateway_class.php:77
+msgid "Login password"
+msgstr "Şifre"
+
+#: WooMendo_init_gateway_class.php:79
+msgid "Password for Login"
+msgstr "Şifre"
+
+#: WooMendo_init_gateway_class.php:82
+msgid "BASE API URL"
+msgstr "API için BASE URL"
+
+#: WooMendo_init_gateway_class.php:84
+msgid "Base URL for API"
+msgstr "API için BASE URL"
+
+#: WooMendo_init_gateway_class.php:103
 msgid "Perform 3D Secure Transaction"
-msgstr "3D Secure İşlemini Gerçekleştirin"
+msgstr "3D Güvenli İşlem Gerçekleştirin"
 
+#: WooMendo_init_gateway_class.php:104
 msgid "A response has been received from your bank."
 msgstr "Bankanızdan cevap alındı."
 
+#: WooMendo_init_gateway_class.php:105
 msgid "Payment successful, you are redirected. . ."
-msgstr "Ödeme başarılı, yönlendiriliyorsunuz . . ."
+msgstr "Ödeme işlemi başarılı, yönlendiriliyorsunuz. . ."
+
+#: creditCard/woomendo_credit_card_class.php:31
+#: creditCard/woomendo_credit_card_class.php:32
+#: creditCard/woomendo_credit_card_class.php:105
+msgid "Name Surname"
+msgstr "Ad Soyad"
+
+#: creditCard/woomendo_credit_card_class.php:33
+msgid "Expiry Date"
+msgstr "Son Kullanma Tarihi"
+
+#: creditCard/woomendo_credit_card_class.php:34
+#: creditCard/woomendo_credit_card_class.php:116
+msgid "Card Number"
+msgstr "Kart Numarası"
+
+#: creditCard/woomendo_credit_card_class.php:101
+#: creditCard/woomendo_credit_card_class.php:127
+msgid "Security Code"
+msgstr "Güvenlik Kodu"
+
+#: creditCard/woomendo_credit_card_class.php:112
+msgid "Name"
+msgstr "İsim"
+
+#: creditCard/woomendo_credit_card_class.php:123
+msgid "Expiry Date (Month/Year)"
+msgstr "Son Kullanma Tarihi (Ay / Yıl)"
+
+#: creditCard/woomendo_credit_card_class.php:134
+msgid "Awaiting Response From Your Bank. . ."
+msgstr "Bankanızdan yanıt bekleniyor. . ."
+
+#. Plugin Name of the plugin/theme
+msgid "WooMendo"
+msgstr "WooMendo"
+
+#. Description of the plugin/theme
+msgid "Extends WooCommerce with an WooMendo gateway."
+msgstr "WooMendo'yu bir ödeme yöntemi olarak etkinleştir."
+
+#. Author of the plugin/theme
+msgid "Umut"
+msgstr "Umut"
