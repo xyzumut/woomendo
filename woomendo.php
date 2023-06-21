@@ -23,9 +23,11 @@ function make_payment_control_action(){
 	
     $post = json_decode(file_get_contents('php://input'), true);
 
+
+
 	# Token api tarafındaki token değil process payment içerisinde oluşturup meta options'lara kaydettiğim şahsi tokenim olmalı
 	# Order ID'de api tarafındaki id değil wordpress tarafındaki id
-	if (!isset($post['token'], $post['order_id'], $post['paid'] )) {
+	if (!isset($post['token'], $post['order_woocommerce_id'], $post['paid'], $post['order_paymendo_id'], $post['order_number'] )) {
 
 		wp_send_json( [
 			'status' => false,
@@ -34,19 +36,22 @@ function make_payment_control_action(){
 		]);
 	}
 
-	if ($post['token'] === get_post_meta( $post['order_id'], 'woomendo_paymendo_payment_control_token', true )) {
+	if ($post['token'] === get_post_meta( $post['order_woocommerce_id'], 'woomendo_paymendo_payment_control_token', true )) {
         # token doğru ve ilgili postmeta kaydı bulunuyor demektir
-		
+
+        update_post_meta( $post['order_woocommerce_id'], 'woomendo_paymendo_order_bank_number', $post['order_number']);
+        
         if (json_decode($post['paid']) === 1) {
-            $order = wc_get_order( (int)$post['order_id'] );  
+            $order = wc_get_order( (int)$post['order_woocommerce_id'] );  
 			$order->set_status('processing');
+            $order->set_transaction_id( $post['order_paymendo_id'] );
 			$order->save();
 
 			wp_send_json( [
 				'status' => true,
 				'message' => 'Order Payment Confirmed',
 				'info' => [
-					'order_id' => $post['order_id'],
+					'order_woocommerce_id' => $post['order_woocommerce_id'],
 					'order_status' => $order->get_status()
 				],
 			]);
