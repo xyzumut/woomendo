@@ -91,3 +91,15 @@ msgstr "İsim"
 
 msgid "Expiry Date (Month/Year)"
 msgstr "Son Kullanma Tarihi (Ay / Yıl)"
+
+msgid "Awaiting Response From Your Bank. . ."
+msgstr "Bankanızdan Cevap Bekleniyor. . ."
+
+msgid "Perform 3D Secure Transaction"
+msgstr "3D Secure İşlemini Gerçekleştirin"
+
+msgid "A response has been received from your bank."
+msgstr "Bankanızdan cevap alındı."
+
+msgid "Payment successful, you are redirected. . ."
+msgstr "Ödeme başarılı, yönlendiriliyorsunuz . . ."

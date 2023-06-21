@@ -98,8 +98,13 @@
         
         public function payment_scripts() {
             wp_enqueue_script( 'woomendo_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo.js', array(), '', true);
-            wp_localize_script( 'woomendo_script', 'woomendo_script', ['admin_url' => get_admin_url()] );
-
+            $localize = [
+                'admin_url' => get_admin_url(), 
+                '_3d_secure_message' => __('Perform 3D Secure Transaction', 'WooMendo'),
+                'response_has_been_received_message' => __('A response has been received from your bank.', 'WooMendo'),
+                'payment_successful_redirect_message' => __('Payment successful, you are redirected. . .', 'WooMendo'),
+            ];
+            wp_localize_script( 'woomendo_script', 'woomendo_script', $localize );
             wp_enqueue_script( 'woomendo_payment_credit_card_script', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.js', array(), '', true);
             wp_enqueue_style( 'woomendo_style', plugin_dir_url( __FILE__ ).'creditCard/woomendo_credit_card.css');
         }

@@ -87,7 +87,7 @@ jQuery(document).on('ready updated_checkout', function (param) {
 
                 document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
 
-                document.getElementById('woomendo_modal_header_content').innerText = '3D Secure İşlemini Gerçekleştirin'
+                document.getElementById('woomendo_modal_header_content').innerText = woomendo_script._3d_secure_message
 
                 document.getElementById('redirect_url').innerText = redirect_url;
             }
@@ -166,7 +166,7 @@ jQuery(document)
 
     document.getElementById('woomendo-spinner').remove(); // spinnerı sildim
 
-    document.getElementById('woomendo_modal_header_content').innerText = '3D Secure İşlemini Gerçekleştirin'
+    document.getElementById('woomendo_modal_header_content').innerText = woomendo_script._3d_secure_message
 });
 
 window.addEventListener(
@@ -183,13 +183,13 @@ window.addEventListener(
             woomendo_modal_close_button.style.visibility='visible'
             woomendo_modal_close_button.addEventListener('click', () => {
                 woomendo_modal_content_container.innerHTML = ''
-                document.getElementById('woomendo_modal_header_content').innerText = 'Bankanızdan Cevap Bekleniyor. . .'
+                document.getElementById('woomendo_modal_header_content').innerText = woomendo_script.response_has_been_received_message
             })
         } 
         else if (messageType === "payment_completed") {
             const redirect_url = document.getElementById('redirect_url').innerText;
             document.getElementById('paymendo-payment-iframe').style.display = 'none'
-            document.getElementById('woomendo_modal_header_content').innerText = 'Ödeme başarılı, yönlendiriliyorsunuz . . .'
+            document.getElementById('woomendo_modal_header_content').innerText = woomendo_script.payment_successful_redirect_message
             document.getElementById('woomendo_modal_content_container').innerHTML = '<div v-if="loading" class="spinner" id="woomendo-spinner"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>'
             location.href = redirect_url;
         }

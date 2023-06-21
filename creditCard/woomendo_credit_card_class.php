@@ -131,7 +131,7 @@ class CreditCard{
             <div id="woomendo_modal" style="display:none;">
                 <div id="woomendo_modal_main_container">
                     <div id="woomendo_modal_header">
-                        <div id="woomendo_modal_header_content">Bankanızdan Cevap Bekleniyor. . .</div>
+                        <div id="woomendo_modal_header_content">'.__('Awaiting Response From Your Bank. . .', 'WooMendo').'</div>
                         <div id="woomendo_modal_header_close_button_container">
                             <div id="woomendo_modal_header_close_button">X</div>
                         </div>
