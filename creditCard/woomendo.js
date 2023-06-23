@@ -1,5 +1,3 @@
-// jQuery(document.body).trigger("update_checkout")
-
 jQuery(document).on('ready updated_checkout', function (param) { 
     const params = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, prop) => searchParams.get(prop),
@@ -18,7 +16,7 @@ jQuery(document).on('ready updated_checkout', function (param) {
                 
                 // Order id'yi linkten aldım
                 const url_params = window.location.href.split('/')
-                console.log(url_params)
+
                 let order_id = url_params.filter(item => !isNaN(Number(item)) && (Number(item) !== 0) )
 
 

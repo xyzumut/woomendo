@@ -123,7 +123,6 @@ jQuery(document).on('ready updated_checkout', function (param) {
     };
     //pop in the appropriate card icon when detected
     cardnumber_mask.on("accept", function () {
-        console.log(cardnumber_mask.masked.currentMask.cardtype);
         switch (cardnumber_mask.masked.currentMask.cardtype) {
             case 'american express':
                 ccicon.innerHTML = amex;

@@ -3,11 +3,6 @@
 
 class CreditCard{
 
-    private PaymendoConnectUtilities $paymendoUtilities;
-    
-    public function getPaymendoUtilities(){ return $this->paymendoUtilities; }
-    public function setPaymendoUtilities($paymendoUtilities){ $this->paymendoUtilities = $paymendoUtilities; }
-    
     public function renderCreditCard(){
         $return='
         <div id="mainContainerCard">
