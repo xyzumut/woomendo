@@ -1,7 +1,4 @@
-# WooMendo
-[![N|Solid](./assets/gri.png)](https://www.gri.net/)
 
----
 
 #### WooMendo Nedir
 > WooMendo WooCommerce içerisine ödeme yöntemi olarak [Paymendo'yu](https://www.paymendo.com/) entegre eden bir Wordpress eklentisidir
